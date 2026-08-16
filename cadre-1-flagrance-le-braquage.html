@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadre I — La flagrance · Le braquage</title>
+<style>
+:root{
+  --bureau:#3C4642; --bureau-fonce:#2E3835;
+  --pelure:#D9DFD6; --pelure-ombre:#C3CCC1;
+  --encre:#19221F; --encre-pale:#5A6863;
+  --tampon:#4A2E7A; --tampon-voile:rgba(74,46,122,.12);
+  --rouge:#9C3125; --vert:#2F6B48;
+  --ambre:#8A5A00; --ambre-voile:rgba(138,90,0,.09);
+  --mono:"Courier New",Courier,ui-monospace,monospace;
+  --etroit:"Arial Narrow","Helvetica Neue Condensed",Arial,sans-serif;
+}
+*{box-sizing:border-box} html,body{margin:0;padding:0}
+body{background:var(--bureau);
+  background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.06) 0 1px,transparent 1px 4px),radial-gradient(120% 80% at 50% 0%,rgba(255,255,255,.06),transparent 60%);
+  color:var(--encre);font-family:var(--mono);font-size:16px;line-height:1.55;min-height:100vh}
+header{position:sticky;top:0;z-index:30;background:var(--bureau-fonce);border-bottom:2px solid #1D2422;color:#C8D2CC;
+  padding:.5rem clamp(.7rem,3vw,1.6rem);display:flex;align-items:center;gap:clamp(.6rem,3vw,2rem);flex-wrap:wrap}
+.serv{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.68rem;line-height:1.3;opacity:.7}
+.serv b{display:block;font-weight:400;letter-spacing:.22em;opacity:.55;font-size:.6rem}
+.cadre-tag{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;border:1.5px solid var(--rouge);color:#E4A79C;padding:.14rem .5rem}
+.pendule{margin-left:auto;text-align:right}
+.pendule .h{font-size:clamp(1.3rem,5vw,1.7rem);font-weight:bold;letter-spacing:.06em;color:#EDEFE9}
+.pendule .r{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.62rem;opacity:.65}
+.pendule.tendu .h{color:#E4A79C}
+.jauge{position:absolute;left:0;bottom:0;height:2px;background:var(--rouge);width:0%;transition:width 1s linear}
+
+main{max-width:800px;margin:0 auto;padding:clamp(1rem,4vw,2.6rem) clamp(.7rem,4vw,1.5rem) 5rem}
+.feuille{position:relative;background:var(--pelure);background-image:linear-gradient(180deg,rgba(255,255,255,.5),transparent 18%);
+  box-shadow:0 1px 0 var(--pelure-ombre),0 14px 34px rgba(0,0,0,.34);
+  padding:clamp(1.1rem,4vw,2.2rem) clamp(1rem,4vw,2.4rem) clamp(1.4rem,4vw,2.2rem) clamp(1.9rem,6vw,3.4rem)}
+.feuille::before{content:"";position:absolute;top:0;bottom:0;left:clamp(1.1rem,3.5vw,2rem);width:1px;background:rgba(156,49,37,.35)}
+.entete{border-bottom:1px solid rgba(25,34,31,.25);padding-bottom:.8rem;margin-bottom:1.3rem}
+.tampon-cote{float:right;margin:-.3rem -.4rem .4rem 1rem;border:1.5px solid var(--rouge);color:var(--rouge);
+  font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.7rem;padding:.18rem .5rem;transform:rotate(1.6deg)}
+.qualif{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.2em;font-size:.66rem;color:var(--encre-pale);margin:0 0 .35rem}
+h1,h2{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.07em;font-weight:bold;margin:0;line-height:1.15}
+h1{font-size:clamp(1.35rem,5.5vw,2rem)} h2{font-size:clamp(1.05rem,4.4vw,1.35rem)}
+.recit{white-space:pre-line;margin:0 0 1.4rem;font-size:.95rem}
+.recit em{font-style:normal;background:rgba(74,46,122,.13);padding:0 .18em}
+
+.question{border-top:1px dashed rgba(25,34,31,.3);padding-top:1.2rem}
+.compteur{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;color:var(--encre-pale);margin-bottom:.5rem}
+.enonce{font-weight:bold;margin:0 0 1rem;font-size:1rem}
+.consigne{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.64rem;color:var(--tampon);margin:-.6rem 0 .9rem}
+
+.opt{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:rgba(255,255,255,.42);
+  border:1px solid rgba(25,34,31,.28);padding:.65rem .8rem .65rem 2.4rem;margin-bottom:.5rem;cursor:pointer;position:relative;transition:background .12s,border-color .12s}
+.opt::before{content:"";position:absolute;left:.85rem;top:.95rem;width:.72rem;height:.72rem;border:1px solid var(--encre-pale)}
+.opt:hover{background:#fff;border-color:var(--encre)}
+.opt[aria-pressed="true"]{border-color:var(--tampon);background:var(--tampon-voile)}
+.opt[aria-pressed="true"]::before{background:var(--tampon);border-color:var(--tampon)}
+.opt:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--tampon);outline-offset:2px}
+.opt.fige{pointer-events:none;opacity:.72}
+.opt.juste{border-color:var(--vert);background:rgba(47,107,72,.14)}
+.opt.juste::before{background:var(--vert);border-color:var(--vert)}
+.opt.faux{border-color:var(--rouge);background:rgba(156,49,37,.1)}
+
+.vf{display:flex;gap:.6rem;align-items:flex-start;border-bottom:1px dotted rgba(25,34,31,.28);padding:.7rem 0}
+.vf p{margin:0;flex:1;font-size:.93rem}
+.vf .paire{display:flex;gap:.3rem;flex:0 0 auto}
+.vf button{font:inherit;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.12em;font-size:.68rem;background:rgba(255,255,255,.5);border:1px solid rgba(25,34,31,.3);color:var(--encre-pale);padding:.35rem .6rem;cursor:pointer}
+.vf button[aria-pressed="true"]{background:var(--tampon);border-color:var(--tampon);color:#F1EDF7}
+.vf.fige button{pointer-events:none}
+.vf .sol{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.64rem;flex:0 0 auto;padding-top:.45rem}
+.vf .sol.ok{color:var(--vert)} .vf .sol.ko{color:var(--rouge)}
+
+.grille{margin-bottom:.6rem}
+.ligne{display:flex;align-items:baseline;gap:.7rem;border-bottom:1px dotted rgba(25,34,31,.28);padding:.55rem 0;flex-wrap:wrap}
+.ligne p{margin:0;flex:1;min-width:12rem;font-size:.93rem}
+.ligne input{font:inherit;font-size:1.25rem;font-weight:bold;width:3.6rem;text-align:center;background:transparent;border:none;border-bottom:2px solid var(--encre);color:var(--encre);padding:.05rem .1rem}
+.ligne .unite{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.68rem;color:var(--encre-pale);width:4rem}
+.ligne input:disabled{color:var(--encre-pale);border-bottom-style:dotted}
+
+.saisie{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.4rem}
+input[type=text]{font:inherit;font-size:1.5rem;font-weight:bold;width:5.5rem;text-align:center;background:transparent;border:none;border-bottom:2px solid var(--encre);color:var(--encre);padding:.1rem .2rem}
+.unite{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;color:var(--encre-pale)}
+
+button.action{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-weight:bold;font-size:.78rem;background:var(--tampon);color:#F1EDF7;border:none;padding:.72rem 1.5rem;cursor:pointer;margin-top:.7rem}
+button.action:hover{background:#5C3C93}
+button.mineur{background:transparent;color:var(--encre-pale);border:1px solid rgba(25,34,31,.3);margin-left:.5rem}
+button.mineur:hover{background:rgba(0,0,0,.05);color:var(--encre)}
+
+.mention{margin-top:1.2rem;padding:.9rem 1rem;font-size:.9rem;border-left:3px solid var(--tampon);background:rgba(255,255,255,.5)}
+.mention.rect{border-left-color:var(--rouge)}
+.mention .tit{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;color:var(--tampon);margin-bottom:.35rem}
+.mention.rect .tit{color:var(--rouge)}
+.mention .art{display:inline-block;margin-top:.55rem;border:1px solid var(--tampon);color:var(--tampon);font-family:var(--etroit);text-transform:uppercase;letter-spacing:.12em;font-size:.64rem;padding:.12rem .45rem}
+
+/* encadré comparatif préliminaire */
+.compare{margin-top:.9rem;padding:.8rem 1rem;border:1px dashed var(--ambre);background:var(--ambre-voile);font-size:.87rem}
+.compare .tit{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:var(--ambre);margin-bottom:.35rem;display:flex;align-items:center;gap:.5rem}
+.compare .tit::before{content:"⇄";font-size:.9rem}
+
+.sceau{position:fixed;inset:0;display:grid;place-items:center;background:rgba(30,36,34,.72);z-index:60;padding:1rem}
+.sceau .marque{border:4px double var(--tampon);color:var(--tampon);background:rgba(233,236,231,.96);padding:1.3rem 1.9rem;text-align:center;transform:rotate(-7deg) scale(2.6);opacity:0;animation:frappe .5s cubic-bezier(.2,1.4,.4,1) forwards}
+.sceau .marque .l1{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.28em;font-size:.7rem}
+.sceau .marque .l2{font-size:clamp(1.5rem,6.5vw,2.4rem);font-weight:bold;letter-spacing:.04em;line-height:1.15}
+.sceau .marque .l3{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;opacity:.8;margin-top:.3rem}
+@keyframes frappe{to{transform:rotate(-7deg) scale(1);opacity:1}}
+.sceau .suite{margin-top:1.6rem;text-align:center}
+
+.bilan{display:flex;gap:1.6rem;flex-wrap:wrap;margin:1.2rem 0 1.6rem}
+.bilan div span{display:block;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:var(--encre-pale)}
+.bilan div b{font-size:1.5rem}
+ul.fiche{padding-left:1.1rem}
+.fiche li{margin-bottom:.8rem;font-size:.9rem}
+.fiche li b{display:block;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.1em;font-size:.7rem;color:var(--tampon)}
+.pied{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:#9AA69F;text-align:center;margin-top:2rem}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{body{background:#fff}header,button{display:none}.feuille{box-shadow:none;background:#fff}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="serv"><b>Sûreté départementale — groupe d'enquête</b>Diptyque des cadres · Mission I sur II</div>
+  <span class="cadre-tag">Cadre : Flagrance</span>
+  <div class="pendule" id="pendule">
+    <div class="h" id="heure">10:20</div>
+    <div class="r" id="reste">Fin de garde à vue à suivre</div>
+  </div>
+  <div class="jauge" id="jauge"></div>
+</header>
+
+<main id="plateau"></main>
+
+<script>
+"use strict";
+
+/* =====================================================================
+   DIPTYQUE DES CADRES — MISSION I : LA FLAGRANCE
+   Affaire : vol à main armée d'une bijouterie, pris sur le fait.
+   Chaque acte porte un encadré "compare" montrant ce qui changerait
+   en enquête préliminaire — c'est le fil rouge du diptyque.
+   Aucune infraction routière ni sexuelle. Droit vérifié en vigueur 2026.
+   ===================================================================== */
+
+const EVENEMENTS = [
+{
+  id:"PHASE 1", heure:"10h20", titre:"Saisine sur la voie publique",
+  nature:"Procès-verbal de saisine et de transport",
+  gain:{l2:"FLAGRANCE",l3:"Le cadre est posé"},
+  recit:`10h20. Une bijouterie vient d'être braquée. Un homme a menacé la gérante d'un pistolet, a raflé les vitrines et pris la fuite sur un scooter il y a moins de dix minutes. Un passant a relevé une partie de la plaque.
+Vous êtes le premier équipage sur place. La gérante est choquée mais indemne. Avant tout acte, le cadre.`,
+  questions:[
+    {
+      type:"qcm",
+      enonce:"Dans quel cadre juridique agissez-vous ?",
+      options:[
+        "Enquête préliminaire : aucun magistrat n'est encore saisi",
+        "Enquête de flagrance",
+        "Information judiciaire, le crime étant grave",
+        "Aucun cadre tant que le procureur n'a pas donné d'instruction"
+      ],
+      bonne:1,
+      indice:"Le crime vient de se commettre et ses traces sont encore fraîches. Regardez l'écart de temps.",
+      mention:`Enquête de flagrance. Le crime ou le délit flagrant est celui qui se commet actuellement ou vient de se commettre ; il l'est aussi lorsque, dans un temps très voisin de l'action, la personne est poursuivie par la clameur publique ou porte des traces la désignant. Le vol à main armée vient de se produire : vous êtes en pleine flagrance.
+La flagrance ouvre les pouvoirs coercitifs les plus larges de l'enquête : saisies et perquisitions sans assentiment, appréhension, réquisitions. C'est tout l'enjeu de bien qualifier dès la première minute — le cadre commande tout ce qui suit.`,
+      art:"Art. 53 CPP",
+      compare:"En préliminaire, l'enquête n'est pas déclenchée par un fait pris sur le fait mais par une plainte tardive, un signalement ou une instruction du parquet. Elle ne confère aucun pouvoir de coercition d'office : chaque acte contraignant y suppose l'assentiment de l'intéressé ou l'autorisation d'un magistrat."
+    },
+    {
+      type:"qcm",
+      enonce:"Quel est votre premier réflexe procédural, avant même d'exploiter la scène ?",
+      options:[
+        "Lancer immédiatement les recherches du fuyard sans en référer à quiconque",
+        "Informer sans délai le procureur de la République",
+        "Attendre l'arrivée d'un officier de police judiciaire habilité avant tout acte",
+        "Recueillir d'abord la plainte écrite de la gérante"
+      ],
+      bonne:1,
+      indice:"En flagrance, un magistrat doit être prévenu dès le départ. Lequel, et à quel rythme ?",
+      mention:`Aviser le procureur de la République. En cas de crime flagrant, l'officier de police judiciaire qui en est informé en avise immédiatement le procureur, se transporte sans délai sur les lieux et procède à toutes constatations utiles. L'avis initial n'est pas une formalité : il ouvre la direction de l'enquête par le parquet, qui peut à tout moment orienter les investigations, se déplacer, ou décider d'une co-saisine.
+L'enquête reste dirigée par le procureur du début à la fin, même quand les actes sont matériellement conduits par les enquêteurs.`,
+      art:"Art. 54 CPP",
+      compare:"En préliminaire aussi le parquet dirige, mais le rythme des avis diffère : le procureur est avisé de l'ouverture s'il en a donné l'instruction, et l'enquête enfermée dans une durée avec obligation d'information de la personne visée passé un certain délai. Il n'y a pas le même « avis immédiat » lié à l'urgence de la flagrance."
+    },
+    {
+      type:"qcm",
+      enonce:"Vous procédez aux constatations dans la bijouterie. Où passe la limite avec la perquisition ?",
+      options:[
+        "Il n'y en a pas : constater et perquisitionner sont un même acte",
+        "Constater consiste à figer et décrire l'état des lieux ; dès que vous fouillez activement pour découvrir des indices cachés, vous perquisitionnez",
+        "La constatation n'est possible qu'après accord écrit de la gérante",
+        "Toute constatation dans un commerce est en réalité une perquisition"
+      ],
+      bonne:1,
+      indice:"L'un fige ce qui est visible, l'autre va chercher ce qui est caché.",
+      mention:`Constater, c'est figer : décrire les lieux, relever et photographier les traces, faire intervenir la police technique et scientifique, établir un périmètre de protection. Cet acte n'obéit pas au formalisme de la perquisition.
+La bascule se produit dès que vous recherchez activement des preuves dans des lieux clos — ouvrir un coffre, fouiller une réserve, explorer un tiroir. À cet instant, ce sont les règles de la perquisition qui s'appliquent. Savoir nommer l'acte que l'on est en train d'accomplir est un réflexe que l'examen teste sans relâche.`,
+      art:"Art. 54 CPP",
+      compare:"La distinction constatation / perquisition vaut dans les deux cadres. Ce qui change, c'est le régime de la perquisition qui suit : coercitive en flagrance, subordonnée à l'assentiment écrit ou à l'autorisation du JLD en préliminaire."
+    },
+    {
+      type:"qcm",
+      enonce:"Le commerçant voisin dispose d'une caméra qui filme la rue. Comment obtenez-vous ses enregistrements ?",
+      options:[
+        "Par une réquisition que l'OPJ délivre directement, propre au cadre de flagrance",
+        "Par une réquisition, mais uniquement sur autorisation préalable du procureur",
+        "En les copiant vous-même sur le système du commerçant, sans formalité",
+        "Sur commission rogatoire d'un juge d'instruction"
+      ],
+      bonne:0,
+      indice:"En flagrance, l'OPJ requiert lui-même. C'est en préliminaire que l'autorisation d'un magistrat entre en jeu.",
+      mention:`En flagrance, l'officier de police judiciaire peut requérir directement de toute personne détentrice d'informations utiles à l'enquête de les lui remettre, y compris des enregistrements de vidéoprotection. Le refus sans motif légitime est réprimé.
+Certaines données restent encadrées même en flagrance — l'accès aux données de connexion obéit à des restrictions particulières issues de la jurisprudence constitutionnelle — mais l'image de vidéoprotection d'un commerce est un cas simple de réquisition directe.`,
+      art:"Art. 60-1 et 60-2 CPP",
+      compare:"En préliminaire, la même réquisition suppose en principe l'autorisation du procureur (art. 77-1-1). Le parquet peut toutefois autoriser à l'avance, par instructions générales, les réquisitions de vidéoprotection pour des catégories d'infractions déterminées, pour une durée de six mois renouvelable. La logique s'inverse : en flagrance on requiert puis on rend compte, en préliminaire on demande l'autorisation d'abord."
+    }
+  ]
+},
+{
+  id:"PHASE 2", heure:"12h05", titre:"Fichiers et identification",
+  nature:"Procès-verbal d'exploitation et de consultation de fichiers",
+  gain:{l2:"T.A.J.",l3:"Le bon fichier pour la bonne donnée"},
+  recit:`12h05. La vidéo est exploitable : on y voit le scooter, une plaque partielle, et le visage découvert de l'auteur au moment où il retire sa cagoule dans la rue.
+Trois pistes à faire parler, chacune dans le bon fichier. Un fichier consulté sans motif légitime, c'est une nullité — et une faute.`,
+  questions:[
+    {
+      type:"qcm",
+      enonce:"Vous voulez savoir si le scooter aperçu sur la vidéo est signalé volé. Quel fichier ?",
+      options:[
+        "Le SIV — système d'immatriculation des véhicules",
+        "Le FOVeS — fichier des objets et des véhicules signalés",
+        "Le TAJ — traitement d'antécédents judiciaires",
+        "Le FPR — fichier des personnes recherchées"
+      ],
+      bonne:1,
+      indice:"Un objet ou un véhicule signalé — volé, découvert, sous surveillance — a son propre fichier.",
+      mention:`Le FOVeS, fichier des objets et des véhicules signalés, recense notamment les véhicules volés, découverts ou faisant l'objet d'une surveillance. C'est lui qu'on interroge pour savoir si le scooter est signalé.
+Ne le confondez pas avec le SIV, qui est le fichier administratif d'immatriculation : le SIV dit à qui appartient la plaque, le FOVeS dit si le véhicule est signalé. Deux questions, deux fichiers.`,
+      art:"Traitements consultables — art. 230-6 et s. CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"La plaque partielle a permis de reconstituer une immatriculation complète. Pour identifier le titulaire du véhicule, quel fichier ?",
+      options:[
+        "Le FOVeS", "Le SIV", "Le FNAEG", "Le TAJ"
+      ],
+      bonne:1,
+      indice:"Le fichier administratif qui relie une plaque à une identité.",
+      mention:`Le SIV, système d'immatriculation des véhicules, relie une plaque à l'identité de son titulaire et aux caractéristiques du véhicule. C'est la consultation qui transforme une immatriculation en piste nominative.
+Attention : le titulaire de la carte grise n'est pas nécessairement l'auteur — le véhicule peut être prêté, loué ou volé, d'où l'intérêt d'avoir interrogé aussi le FOVeS.`,
+      art:"Système d'immatriculation des véhicules"
+    },
+    {
+      type:"qcm",
+      enonce:"Un nom ressort. Pour savoir si cette personne est déjà connue des services et pour disposer d'une photographie exploitable, quel fichier ?",
+      options:[
+        "Le FPR", "Le SIV", "Le TAJ", "Le FOVeS"
+      ],
+      bonne:2,
+      indice:"Le fichier des antécédents, alimenté par les procédures, qui contient les clichés.",
+      mention:`Le TAJ, traitement d'antécédents judiciaires, recense les personnes mises en cause et les victimes dans les procédures, et contient les photographies d'identité judiciaire. C'est lui qui permet d'établir un lien avec des antécédents et d'extraire un cliché.
+Le FPR, lui, sert à savoir si la personne fait l'objet d'une recherche active — mandat, fiche de recherche, interdiction. Deux usages distincts : le TAJ pour les antécédents, le FPR pour l'état de recherche.`,
+      art:"TAJ — art. 230-6 et s. CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"Sur quel fondement pouvez-vous consulter ces fichiers, et qu'est-ce qui rendrait la consultation irrégulière ?",
+      options:[
+        "Aucun motif n'est requis : l'accès des policiers aux fichiers est libre",
+        "La consultation doit être justifiée par les nécessités de l'enquête en cours et tracée ; une consultation pour un motif étranger est un détournement, pénalement répréhensible",
+        "Seul le procureur peut consulter un fichier, jamais l'enquêteur",
+        "La consultation est libre en flagrance mais interdite en préliminaire"
+      ],
+      bonne:1,
+      indice:"Un fichier n'est pas un moteur de recherche personnel. Chaque interrogation laisse une trace.",
+      mention:`La consultation d'un fichier de police n'est légitime que rattachée aux nécessités d'une procédure en cours, et elle est tracée. Consulter pour un motif personnel — renseignement sur un voisin, une connaissance, un contentieux privé — est un détournement de finalité, constitutif d'une infraction et d'une faute disciplinaire.
+Cette exigence de motif ne dépend pas du cadre d'enquête : elle vaut en flagrance comme en préliminaire. C'est un point de déontologie que l'ENP martèle, et qui tombe régulièrement à l'examen.`,
+      art:"Finalité et traçabilité des traitements — art. 230-8 et s. CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"Vous présentez une photographie à la gérante pour reconnaissance. Comment procédez-vous ?",
+      options:[
+        "Vous lui montrez le seul cliché du suspect : c'est plus rapide et plus clair",
+        "Vous constituez une planche de plusieurs photographies de personnes de morphologie comparable, dont celle du suspect, et consignez le déroulé au procès-verbal",
+        "Vous lui décrivez le suspect à voix haute et notez si elle confirme",
+        "Vous attendez le tapissage physique, une photo n'ayant aucune valeur"
+      ],
+      bonne:1,
+      indice:"Montrer une seule photo oriente le témoin et fragilise la reconnaissance.",
+      mention:`La reconnaissance sur planche photographique suppose de noyer le cliché du suspect parmi plusieurs photographies de personnes présentant des caractéristiques physiques comparables. Présenter une photo isolée est une reconnaissance suggestive : elle oriente le témoin et affaiblit gravement la valeur probante, jusqu'à exposer l'acte à la critique.
+Le procès-verbal décrit précisément le nombre de clichés, les conditions de présentation et les déclarations spontanées du témoin. La loyauté de la preuve se joue ici autant que l'efficacité.`,
+      art:"Reconnaissance — exigence de loyauté de la preuve"
+    }
+  ]
+},
+{
+  id:"PHASE 3", heure:"16h30", titre:"Interpellation et placement en garde à vue",
+  nature:"Procès-verbal d'interpellation et de notification des droits",
+  gain:{l2:"63-1",l3:"Les droits, dès le début"},
+  recit:`16h30. Le suspect est localisé à son domicile. Vous l'interpellez sans difficulté. L'heure de l'appréhension est notée : 16h34.
+Retour au service. Le registre de garde à vue est ouvert. Le major, sans lever les yeux : « Tu ne notifies rien avant de m'avoir dit qui décide, et à partir de quand court le délai. »`,
+  questions:[
+    {
+      type:"qcm",
+      enonce:"Sur quel fondement pouvez-vous appréhender le suspect chez lui, sans mandat ?",
+      options:[
+        "La flagrance permet l'appréhension coercitive dans le temps de l'enquête ; aucun mandat n'est requis",
+        "Il faut un mandat d'amener délivré par un juge",
+        "Il faut l'accord écrit du suspect pour l'emmener",
+        "Seul le procureur peut procéder lui-même à l'interpellation"
+      ],
+      bonne:0,
+      indice:"Le pouvoir de contrainte est précisément ce que la flagrance ajoute à l'enquête.",
+      mention:`En flagrance, la contrainte est de plein droit dans le temps de l'enquête : l'officier de police judiciaire peut appréhender l'auteur présumé et le conduire au service, sans mandat ni autorisation préalable. C'est la traduction concrète des pouvoirs coercitifs du cadre.`,
+      art:"Art. 53 et 73 CPP",
+      compare:"En préliminaire, il n'existe pas de pouvoir d'appréhension coercitif d'office. On procède par convocation de la personne, qui vient librement. La contrainte n'est possible que dans des cas particuliers — mandat de recherche pour certaines infractions, ou basculement en flagrance si des faits nouveaux le justifient. C'est la différence la plus visible entre les deux cadres sur le terrain."
+    },
+    {
+      type:"qcm",
+      enonce:"Qui décide du placement en garde à vue ?",
+      options:[
+        "Le procureur de la République, seul",
+        "L'officier de police judiciaire, qui en informe le procureur dès le début de la mesure",
+        "L'agent de police judiciaire ayant procédé à l'interpellation",
+        "Le juge des libertés et de la détention"
+      ],
+      bonne:1,
+      indice:"Décision policière, contrôle magistrat.",
+      mention:`L'officier de police judiciaire décide de la garde à vue, d'office ou sur instruction du parquet, et en informe le procureur dès le début de la mesure. La règle de partage vaut pour tout l'examen : l'OPJ décide et exécute, le parquet contrôle, autorise les prolongations et dirige.`,
+      art:"Art. 63 CPP",
+      compare:"La décision de garde à vue appartient à l'OPJ dans les deux cadres — la garde à vue n'est pas propre à la flagrance. Ce qui varie, ce sont les actes que la garde à vue permet d'accompagner : en préliminaire, la perquisition concomitante restera soumise à l'assentiment ou à l'autorisation du JLD."
+    },
+    {
+      type:"multi",
+      enonce:"Quelles conditions doivent être réunies pour placer la personne en garde à vue ?",
+      consigne:"Trois réponses attendues",
+      options:[
+        "Une ou plusieurs raisons plausibles de soupçonner qu'elle a commis ou tenté de commettre l'infraction",
+        "L'infraction est un crime ou un délit puni d'une peine d'emprisonnement",
+        "La mesure est l'unique moyen d'atteindre l'un des objectifs prévus par la loi",
+        "L'infraction est punie d'au moins cinq ans d'emprisonnement",
+        "La personne a refusé de décliner son identité"
+      ],
+      bonnes:[0,1,2],
+      indice:"Le seuil de cinq ans et le refus d'identité relèvent d'autres régimes.",
+      mention:`Trois conditions cumulatives : des raisons plausibles de soupçonner la personne, un crime ou un délit puni d'emprisonnement, et la nécessité — la garde à vue doit être l'unique moyen d'atteindre l'un des six objectifs légaux (poursuivre les investigations, garantir la présentation au magistrat, empêcher la destruction des preuves, la concertation avec des complices, les pressions sur témoins ou victimes, faire cesser l'infraction).
+Le seuil de cinq ans concerne la prolongation de la flagrance. Le refus de justifier de son identité relève de la vérification d'identité.`,
+      art:"Art. 62-2 CPP"
+    },
+    {
+      type:"num", unite:"heures",
+      enonce:"Quelle est la durée initiale de la garde à vue, et à partir de quand court-elle ?",
+      bonne:"24",
+      indice:"Une journée entière. Et le compteur ne démarre pas à l'arrivée au service.",
+      mention:`Vingt-quatre heures, à compter de l'heure de l'appréhension — ici 16h34, et non l'heure d'arrivée au service ni celle de la décision de placement. Ce point de départ est l'erreur de calcul la plus fréquente, et elle vicie toute la mesure.
+Notez soigneusement cette heure au registre : c'est elle qui fixera l'échéance des 24 heures, puis celle d'une éventuelle prolongation.`,
+      art:"Art. 63 CPP"
+    },
+    {
+      type:"vf",
+      enonce:"Parmi les droits notifiés, ces affirmations sont-elles vraies ou fausses ?",
+      consigne:"Vrai ou faux pour chaque ligne",
+      items:[
+        {label:"La personne a le droit de faire prévenir un proche et son employeur", bonne:true},
+        {label:"La personne peut téléphoner elle-même, librement, à la personne de son choix", bonne:false},
+        {label:"La personne a le droit de se taire", bonne:true},
+        {label:"La personne a le droit d'être examinée par un médecin", bonne:true},
+        {label:"La personne a le droit d'être assistée par un avocat", bonne:true}
+      ],
+      indice:"Un seul de ces droits est mal formulé : celui qui concerne le téléphone.",
+      mention:`Le gardé à vue ne téléphone pas librement : il a le droit de faire prévenir un proche, son employeur et, s'il est étranger, ses autorités consulaires, mais ce sont les enquêteurs qui effectuent la diligence, en principe dans les trois heures.
+Les autres droits sont notifiés dès le début, dans une langue comprise : nature et date présumée de l'infraction, durée de la mesure et prolongations possibles, examen médical, avocat, interprète, consultation de certaines pièces, et droit de faire des déclarations, de répondre aux questions ou de se taire.`,
+      art:"Art. 63-1 CPP"
+    }
+  ]
+},
+{
+  id:"PHASE 4", heure:"18h00", titre:"Perquisition, saisies, présentation",
+  nature:"Procès-verbal de perquisition et de saisie",
+  gain:{l2:"SANS ASSENTIMENT",l3:"La coercition du cadre"},
+  recit:`18h00. Le domicile du gardé à vue doit être exploité : l'arme et le butin y sont peut-être encore. La compagne du mis en cause est présente et refuse que vous entriez.
+Le major vous regarde préparer votre transport. « En flagrance, son refus, tu en fais quoi ? »`,
+  questions:[
+    {
+      type:"qcm",
+      enonce:"La compagne s'oppose à la perquisition. Que fait ce refus en flagrance ?",
+      options:[
+        "Il fait obstacle : sans assentiment, vous ne pouvez pas perquisitionner",
+        "Rien : en flagrance, la perquisition est coercitive et ne requiert pas l'assentiment de l'occupant",
+        "Il impose d'obtenir l'autorisation écrite du procureur avant d'entrer",
+        "Il impose de saisir le juge des libertés et de la détention"
+      ],
+      bonne:1,
+      indice:"L'assentiment est la marque d'un autre cadre. Lequel ?",
+      mention:`En flagrance, la perquisition est un acte coercitif : elle n'est pas subordonnée à l'assentiment de la personne chez qui elle a lieu. Le refus de l'occupant est sans effet sur votre pouvoir d'y procéder.
+Ce pouvoir n'est pas sans règles pour autant : il s'exerce dans le respect des horaires légaux et des formalités de présence, que la suite va préciser.`,
+      art:"Art. 56 CPP",
+      compare:"C'est ici que le contraste est le plus net. En préliminaire, la perquisition exige l'assentiment exprès et écrit de la personne — recueilli sur un document signé de sa main. À défaut d'assentiment, elle n'est possible que sur autorisation du juge des libertés et de la détention, pour un crime ou un délit puni d'au moins trois ans d'emprisonnement. La même perquisition, deux régimes opposés selon le cadre."
+    },
+    {
+      type:"num", unite:"heures",
+      enonce:"Passé quelle heure une perquisition ne peut-elle plus être commencée dans ce domicile ?",
+      bonne:"21",
+      indice:"La fenêtre s'ouvre à 6 heures.",
+      mention:`Une perquisition ne peut être commencée ni avant 6 heures ni après 21 heures. C'est le commencement qui est encadré : une perquisition régulièrement débutée à 20h50 peut se poursuivre au-delà de 21 heures.
+Ici, à 18 heures, vous êtes dans les clous. La flagrance élargit vos pouvoirs mais ne suspend jamais l'horloge — les exceptions aux heures légales sont limitativement prévues (réclamation de l'intérieur, régimes spéciaux).`,
+      art:"Art. 59 CPP",
+      compare:"La règle horaire de 6 h à 21 h vaut dans les deux cadres. Elle n'est pas un attribut de la flagrance : c'est une garantie attachée au domicile, indépendante du cadre d'enquête."
+    },
+    {
+      type:"qcm",
+      enonce:"En présence de qui la perquisition doit-elle se dérouler ?",
+      options:[
+        "De n'importe quel voisin disponible",
+        "De la personne chez qui elle a lieu ; à défaut, d'un représentant de son choix ; à défaut encore, de deux témoins requis étrangers au service",
+        "Du seul officier de police judiciaire, aucune présence n'étant exigée en flagrance",
+        "D'un avocat, obligatoirement"
+      ],
+      bonne:1,
+      indice:"Un ordre de priorité en trois temps, avec un filet de sécurité final.",
+      mention:`La perquisition se fait en présence de la personne chez qui elle a lieu. Si elle est absente ou refuse d'y assister, elle peut désigner un représentant ; à défaut, l'officier de police judiciaire requiert deux témoins étrangers à son service.
+Cette formalité de présence protège à la fois l'occupant et la valeur des saisies : elle garantit que rien n'a été ajouté ni soustrait.`,
+      art:"Art. 57 CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"Vous découvrez le pistolet et une partie du butin. Que faites-vous ?",
+      options:[
+        "Vous les photographiez puis les laissez sur place pour le juge d'instruction",
+        "Vous les saisissez après fixation par la police technique et scientifique, les inventoriez et les placez sous scellés, le tout décrit au procès-verbal",
+        "Vous remettez immédiatement le butin à la gérante de la bijouterie",
+        "Vous saisissez le butin mais laissez l'arme, trop dangereuse à manipuler"
+      ],
+      bonne:1,
+      indice:"Deux gestes se suivent : on fige, puis on saisit. Rien ne se restitue à ce stade.",
+      mention:`Saisie et placement sous scellés. En flagrance, l'OPJ saisit les armes et instruments ayant servi à commettre l'infraction, ainsi que ce qui en paraît être le produit. On procède d'abord à la fixation par la police technique et scientifique — traces, ADN, empreintes — puis à la saisie, avec des gants.
+Les objets sont immédiatement inventoriés et placés sous scellés ; en cas de difficulté d'inventaire sur place, on recourt à des scellés fermés provisoires. Tout est décrit au procès-verbal : nature de l'objet, lieu et heure exacte de la découverte. Aucune restitution à ce stade — la question de la restitution viendra en fin de procédure.`,
+      art:"Art. 54 et 56 CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"Vous organisez une présentation physique du suspect à la gérante, derrière une glace sans tain. Quelle exigence méthodologique s'impose ?",
+      options:[
+        "Présenter le suspect seul : la gérante le reconnaîtra ou non",
+        "Intégrer le suspect dans un groupe de personnes de morphologie comparable, et consigner l'intégralité du déroulé au procès-verbal",
+        "Présenter le suspect menotté pour que le témoin comprenne son statut",
+        "Faire parler le suspect seul devant la vitre pour tester la voix"
+      ],
+      bonne:1,
+      indice:"Même logique que la planche photo : une présentation isolée oriente le témoin.",
+      mention:`La présentation physique — le « tapissage » — obéit à la même exigence de loyauté que la planche photographique : le suspect doit être noyé dans un groupe de personnes de morphologie et d'apparence comparables, sans signe distinctif orientant le témoin (ni menottes, ni position isolée). L'ensemble du déroulé est consigné au procès-verbal.
+Une présentation suggestive fragilise la reconnaissance et expose l'acte à la contestation. La valeur d'une identification tient autant à sa méthode qu'à son résultat.`,
+      art:"Reconnaissance physique — loyauté de la preuve"
+    }
+  ]
+},
+{
+  id:"PHASE 5", heure:"20h15", titre:"Auditions et signalisation",
+  nature:"Procès-verbal d'audition et d'opérations de signalisation",
+  gain:{l2:"706-56",l3:"Le refus a un prix"},
+  recit:`20h15. L'avocat a été avisé et s'est présenté. Vous vous apprêtez à entendre le mis en cause sur le fond.
+Puis viendra la signalisation. Le major glisse : « S'il refuse le prélèvement, tu sais ce que ça déclenche ? »`,
+  questions:[
+    {
+      type:"multi",
+      enonce:"Avant d'entendre le mis en cause sur les faits, que devez-vous lui notifier ?",
+      consigne:"Trois réponses attendues",
+      options:[
+        "La qualification, la date et le lieu présumés de l'infraction",
+        "Son droit de se taire, de faire des déclarations ou de répondre aux questions",
+        "Son droit d'être assisté par son avocat au cours de l'audition",
+        "L'obligation de répondre sous peine de sanction",
+        "Le nom des témoins qui l'accusent"
+      ],
+      bonnes:[0,1,2],
+      indice:"Deux intrus : l'un contredit le droit au silence, l'autre trahirait l'enquête.",
+      mention:`Avant l'audition sur le fond, on rappelle la qualification, la date et le lieu présumés de l'infraction, le droit de se taire — de faire des déclarations, de répondre aux questions ou de garder le silence — et le droit à l'assistance de l'avocat pendant l'audition.
+Il n'existe aucune obligation de répondre : la contredire serait une atteinte au droit au silence. Et l'on ne révèle pas l'identité des témoins au fil de l'audition, sous peine de compromettre l'enquête et la sécurité des personnes.`,
+      art:"Art. 63-1 et 61-1 CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"L'avocat vient d'être avisé et n'est pas encore arrivé. Pouvez-vous commencer l'audition ?",
+      options:[
+        "Oui, immédiatement : l'avis suffit",
+        "Non, jamais sans la présence effective de l'avocat",
+        "Vous devez respecter un délai de carence de deux heures permettant à l'avocat d'arriver, sauf autorisation de débuter avant",
+        "Vous devez attendre vingt-quatre heures"
+      ],
+      bonne:2,
+      indice:"Un délai chiffré protège le temps d'arrivée de l'avocat.",
+      mention:`Un délai de carence de deux heures s'écoule après l'avis à l'avocat avant que l'audition puisse débuter, afin de lui permettre d'arriver. À l'expiration de ce délai, l'audition peut commencer même en son absence. Le procureur peut, à titre exceptionnel et sur autorisation écrite et motivée, permettre de débuter avant l'expiration du délai.
+Cette mécanique concilie les droits de la défense et les nécessités de l'enquête : elle ne fige pas la procédure, mais elle garantit un temps réel d'accès à l'avocat.`,
+      art:"Art. 63-4-2 CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"Vous procédez à la signalisation et au prélèvement biologique. Faut-il une autorisation de magistrat ?",
+      options:[
+        "Oui, l'autorisation écrite du procureur est indispensable",
+        "Non : l'OPJ peut procéder ou faire procéder au prélèvement biologique, quel que soit le cadre, sans autorisation préalable d'un magistrat",
+        "Oui, seul le juge des libertés et de la détention peut l'ordonner",
+        "Non, mais uniquement en flagrance ; en préliminaire l'autorisation est requise"
+      ],
+      bonne:1,
+      indice:"Sur ce point précis, le cadre d'enquête est indifférent.",
+      mention:`L'officier de police judiciaire peut procéder ou faire procéder, sous son contrôle, au prélèvement biologique destiné au FNAEG, sans que l'autorisation d'un magistrat soit désormais nécessaire, et quel que soit le cadre d'enquête. Le prélèvement se fait par frottis buccal et ne peut servir qu'à l'identification.
+C'est un des rares actes où flagrance et préliminaire s'alignent parfaitement : la signalisation ne dépend pas du cadre.`,
+      art:"Art. 706-54 et s. CPP",
+      compare:"Point d'alignement plutôt que de contraste : la signalisation et le prélèvement biologique obéissent au même régime dans les deux cadres. À signaler à l'examen justement parce qu'on s'attend, à tort, à une différence."
+    },
+    {
+      type:"qcm",
+      enonce:"Le mis en cause, soupçonné d'un crime, refuse le prélèvement biologique. Que risque-t-il ?",
+      options:[
+        "Rien : le refus est un droit",
+        "Une amende contraventionnelle seulement",
+        "Un an d'emprisonnement et 15 000 euros d'amende, peines aggravées s'il est déjà condamné pour crime",
+        "Le prélèvement est alors effectué de force, sans autre conséquence"
+      ],
+      bonne:2,
+      indice:"Le refus est lui-même une infraction délictuelle autonome.",
+      mention:`Le refus de se soumettre au prélèvement biologique est un délit puni d'un an d'emprisonnement et de 15 000 euros d'amende. Les peines sont portées à deux ans et 30 000 euros lorsque la personne a déjà été définitivement condamnée pour un crime.
+Le refus n'autorise pas le prélèvement par la contrainte physique : il constitue une infraction distincte, qui s'ajoute à la procédure en cours. Le même régime de refus réprimé vaut pour les relevés signalétiques — empreintes, photographie — sur le fondement de l'article 55-1.`,
+      art:"Art. 706-56 II CPP"
+    }
+  ]
+},
+{
+  id:"PHASE 6", heure:"14h10", titre:"Fin de garde à vue et issue",
+  nature:"Procès-verbal de fin de mesure et avis au parquet",
+  gain:{l2:"DÉFÈREMENT",l3:"Le crime va au juge"},
+  recit:`Le lendemain. La garde à vue a été prolongée dans la nuit. Les investigations sont bouclées, les scellés constitués.
+Le procureur va vous donner ses instructions. Encore faut-il calculer juste, et proposer l'issue qui convient à un crime.`,
+  questions:[
+    {
+      type:"num", unite:"heures",
+      enonce:"La garde à vue a été prolongée. Quelle est sa durée maximale de droit commun pour ce crime ?",
+      bonne:"48",
+      indice:"24 plus une prolongation. Les 96 heures sont réservées à un autre régime.",
+      mention:`Quarante-huit heures : vingt-quatre heures, plus une prolongation de vingt-quatre heures autorisée par le procureur, l'infraction étant punie d'au moins un an d'emprisonnement.
+Les durées dérogatoires de 96 heures sont réservées à la criminalité et à la délinquance organisées ainsi qu'au terrorisme, sous autorisation du juge des libertés et de la détention. Un braquage isolé, hors bande organisée, reste dans le droit commun : la qualification criminelle, à elle seule, n'ouvre jamais les 96 heures. C'est le piège classique.`,
+      art:"Art. 63 II CPP"
+    },
+    {
+      type:"vf",
+      enonce:"Sur la prolongation, ces affirmations sont-elles vraies ou fausses ?",
+      consigne:"Vrai ou faux pour chaque ligne",
+      items:[
+        {label:"La prolongation suppose en principe la présentation préalable de la personne au procureur", bonne:true},
+        {label:"L'autorisation de prolongation doit être écrite et motivée", bonne:true},
+        {label:"La prolongation peut être décidée par l'OPJ lui-même s'il est chef de service", bonne:false}
+      ],
+      indice:"Deux garanties tiennent, une affirmation confond OPJ et magistrat.",
+      mention:`Vrai, vrai, faux. La prolongation suppose en principe la présentation de la personne au magistrat — physiquement ou par visioconférence — sauf décision motivée de ce dernier. Elle est autorisée par écrit et motivée : une motivation absente ou insuffisante fait tomber la mesure.
+Elle relève toujours du procureur, jamais de l'OPJ, fût-il chef de service. Le partage décision policière / contrôle magistrat culmine ici : c'est le magistrat qui prolonge la privation de liberté.`,
+      art:"Art. 63 II CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"En fin de procédure, que devient le pistolet placé sous scellé ?",
+      options:[
+        "Il est restitué au mis en cause, propriétaire de l'objet",
+        "Il n'est pas restitué : objet dangereux et utile à la manifestation de la vérité, il demeure sous scellé et suit la procédure",
+        "Il est détruit sur-le-champ par l'OPJ",
+        "Il est remis à la gérante de la bijouterie"
+      ],
+      bonne:1,
+      indice:"On ne restitue ni ce qui sert de preuve, ni ce qui est dangereux.",
+      mention:`Le pistolet n'est pas restitué : il est à la fois l'instrument du crime, utile à la manifestation de la vérité, et un objet dangereux. Il demeure sous scellé et suit la procédure jusqu'à la décision de la juridiction.
+La restitution ne concerne que les objets dont la conservation n'est plus nécessaire à la manifestation de la vérité et qui ne présentent pas de danger — un téléphone sans intérêt probant, des effets personnels neutres. Elle obéit à ses propres règles et peut être décidée par le procureur.`,
+      art:"Art. 41-4 et 56 CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"La garde à vue s'achève. Quel acte clôt la mesure côté parquet ?",
+      options:[
+        "Aucun : la fin de garde à vue est purement matérielle",
+        "Un procès-verbal de fin de garde à vue, et l'avis de fin de mesure au procureur, dont vous exécutez ensuite les instructions",
+        "Une ordonnance de mise en liberté signée par l'OPJ",
+        "Un réquisitoire introductif rédigé par l'OPJ"
+      ],
+      bonne:1,
+      indice:"On acte la fin, on en avise le magistrat, on attend ses instructions.",
+      mention:`La garde à vue se clôt par un procès-verbal récapitulant son déroulement — heures, droits exercés, auditions, repos — et par l'avis de fin de mesure au procureur. L'OPJ exécute ensuite les instructions du magistrat sur le sort du mis en cause.
+Le réquisitoire introductif, lui, émane du procureur, jamais de l'OPJ : c'est l'acte par lequel le parquet saisit le juge d'instruction.`,
+      art:"Art. 63 et 64 CPP"
+    },
+    {
+      type:"multi",
+      enonce:"Pour un crime tel que ce vol à main armée, quelles suites le procureur peut-il retenir ?",
+      consigne:"Deux réponses attendues — attention aux fausses pistes propres aux délits",
+      options:[
+        "Le défèrement en vue de l'ouverture d'une information judiciaire (réquisitoire introductif)",
+        "Le classement sans suite, si les charges sont finalement insuffisantes",
+        "La comparution immédiate devant le tribunal correctionnel",
+        "La comparution sur reconnaissance préalable de culpabilité (CRPC)",
+        "La convocation par officier de police judiciaire (COPJ) devant le tribunal correctionnel"
+      ],
+      bonnes:[0,1],
+      indice:"Trois de ces voies sont réservées aux délits. Un crime ne se juge pas au correctionnel.",
+      mention:`Pour un crime, la voie normale est le défèrement en vue de l'ouverture d'une information judiciaire : l'instruction est obligatoire en matière criminelle, et le procureur saisit le juge d'instruction par réquisitoire introductif. Le classement sans suite reste possible si les charges s'effondrent.
+Les trois autres voies — comparution immédiate, CRPC, convocation par OPJ — sont réservées aux délits et supposent une juridiction correctionnelle. Un crime ne se juge ni au tribunal correctionnel ni par ces procédures rapides : le proposer serait une faute de raisonnement que l'examen sanctionne. C'est la conséquence directe de la classification tripartite.`,
+      art:"Art. 80 et 393 et s. CPP"
+    }
+  ]
+}
+];
+
+/* --------- verrou final : les durées de la flagrance --------- */
+const SYNTHESE = [
+  {label:"Durée initiale de l'enquête de flagrance", bonne:"8", unite:"jours"},
+  {label:"Prolongation de la flagrance par le procureur", bonne:"8", unite:"jours"},
+  {label:"Seuil de peine pour prolonger la flagrance", bonne:"5", unite:"ans"},
+  {label:"Durée initiale de la garde à vue", bonne:"24", unite:"heures"},
+  {label:"Prolongation de la garde à vue", bonne:"24", unite:"heures"},
+  {label:"Seuil de peine pour prolonger la garde à vue", bonne:"1", unite:"an"}
+];
+
+/* ========================= MOTEUR ========================= */
+const DUREE = 50*60;
+const H_DEBUT = 10*60+20, H_FIN = (24+14)*60+10;  // 10h20 -> lendemain 14h10
+let reste = DUREE, chrono = null, demarre = false;
+let iEv = 0, iQ = 0, penalites = 0;
+let selection = [], vfSel = [], essais = 0;
+const acquis = [];
+
+const plateau = document.getElementById("plateau");
+const elHeure = document.getElementById("heure");
+const elReste = document.getElementById("reste");
+const elJauge = document.getElementById("jauge");
+const elPendule = document.getElementById("pendule");
+
+function fmt(s){const m=Math.floor(Math.abs(s)/60),r=Math.abs(s)%60;return (s<0?"-":"")+String(m).padStart(2,"0")+":"+String(r).padStart(2,"0");}
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function recit(t){return esc(t).replace(/&lt;em&gt;/g,"<em>").replace(/&lt;\/em&gt;/g,"</em>").replace(/\n/g,"<br>");}
+function para(t){return esc(t).replace(/\n/g,"<br>");}
+
+function pendule(){
+  const ecoule = Math.min(DUREE-reste, DUREE);
+  const t = H_DEBUT + (ecoule/DUREE)*(H_FIN-H_DEBUT);
+  const h = Math.floor(t/60)%24, m = Math.floor(t%60);
+  elHeure.textContent = String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");
+  elReste.textContent = reste>0 ? "Reste "+fmt(reste)+" d'investigation" : "Temps dépassé — "+fmt(reste);
+  elJauge.style.width = Math.min(100,(ecoule/DUREE)*100)+"%";
+  elPendule.classList.toggle("tendu", reste<=420);
+}
+function lancer(){ if(demarre) return; demarre=true; chrono=setInterval(()=>{reste--;pendule();},1000); }
+function penalite(s){ reste-=s; penalites+=s; pendule(); }
+
+/* ========================= ÉCRANS ========================= */
+function accueil(){
+  const nbQ = EVENEMENTS.reduce((n,e)=>n+e.questions.length,0);
+  plateau.innerHTML = `
+  <div class="feuille">
+    <div class="entete">
+      <p class="qualif">Diptyque des cadres d'enquête — mission I sur II</p>
+      <h1>La flagrance · Le braquage</h1>
+    </div>
+    <p class="recit">Un vol à main armée pris sur le fait. Vous menez l'affaire de la saisine jusqu'à la fin de la garde à vue, dans le cadre le plus coercitif de la procédure : la flagrance.
+
+Six phases, ${nbQ} séquences. À chaque acte, un <em>encadré comparatif</em> vous montre ce qui basculerait si la même affaire relevait de l'enquête préliminaire — c'est le fil rouge du diptyque, et le cœur de ce que teste le CNJ.
+
+Une erreur coûte <em>une minute</em> d'investigation. Aucune ne bloque : tout est expliqué, article à l'appui, et repris en fiche à la fin.
+
+Verrou final : les six durées qui structurent la flagrance et la garde à vue.</p>
+    <button class="action" id="go">Prendre l'affaire</button>
+    <p class="pied" style="text-align:left;margin-top:1.4rem">Cadre : flagrance — durée estimée 50 minutes — jeu solo, hors connexion</p>
+  </div>`;
+  document.getElementById("go").onclick = ()=>{ lancer(); rendre(); };
+}
+
+function rendre(){
+  const ev = EVENEMENTS[iEv], q = ev.questions[iQ];
+  selection = []; vfSel = (q.type==="vf") ? q.items.map(()=>null) : []; essais = 0;
+
+  let champ = "";
+  if(q.type==="num"){
+    champ = `<div class="saisie"><input type="text" id="saisie" inputmode="numeric" autocomplete="off" maxlength="3" aria-label="Votre réponse">
+      <span class="unite">${esc(q.unite||"")}</span></div>`;
+  }else if(q.type==="grille"){
+    champ = `<div class="grille">`+q.champs.map((c,i)=>
+      `<div class="ligne"><p>${esc(c.label)}</p><input type="text" inputmode="numeric" maxlength="3" data-i="${i}" aria-label="${esc(c.label)}"><span class="unite">${esc(c.unite)}</span></div>`).join("")+`</div>`;
+  }else if(q.type==="vf"){
+    champ = q.items.map((it,i)=>
+      `<div class="vf" data-i="${i}"><p>${esc(it.label)}</p><span class="paire">
+        <button type="button" data-v="1" aria-pressed="false">Vrai</button>
+        <button type="button" data-v="0" aria-pressed="false">Faux</button></span><span class="sol"></span></div>`).join("");
+  }else{
+    champ = q.options.map((o,i)=>`<button class="opt" type="button" data-i="${i}" aria-pressed="false">${esc(o)}</button>`).join("");
+  }
+
+  plateau.innerHTML = `
+  <div class="feuille">
+    <div class="entete">
+      <span class="tampon-cote">${esc(ev.id)} · ${esc(ev.heure)}</span>
+      <p class="qualif">${esc(ev.nature)}</p>
+      <h2>${esc(ev.titre)}</h2>
+      ${iQ===0 ? `<p class="recit" style="margin-top:1.1rem">${recit(ev.recit)}</p>` : ``}
+    </div>
+    <div class="question">
+      <p class="compteur">Phase ${iEv+1} sur ${EVENEMENTS.length} — séquence ${iQ+1} sur ${ev.questions.length}</p>
+      <p class="enonce">${esc(q.enonce)}</p>
+      ${q.consigne?`<p class="consigne">${esc(q.consigne)}</p>`:""}
+      ${champ}
+      <button class="action" id="valider">Verser la réponse</button>
+      <div id="retour"></div>
+    </div>
+  </div>
+  <p class="pied">Une erreur = une minute d'investigation</p>`;
+
+  if(q.type==="num"){
+    const s=document.getElementById("saisie"); s.focus();
+    s.addEventListener("keydown",e=>{if(e.key==="Enter")valider();});
+  }else if(q.type==="grille"){
+    const ch=[...plateau.querySelectorAll(".ligne input")];
+    ch.forEach((c,i)=>c.addEventListener("keydown",e=>{if(e.key==="Enter"){ if(ch[i+1]) ch[i+1].focus(); else valider(); }}));
+    ch[0].focus();
+  }else if(q.type==="vf"){
+    plateau.querySelectorAll(".vf").forEach(ligne=>{
+      const i=+ligne.dataset.i;
+      ligne.querySelectorAll("button").forEach(b=>{
+        b.onclick=()=>{ ligne.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); vfSel[i]=b.dataset.v==="1"; };
+      });
+    });
+  }else{
+    plateau.querySelectorAll(".opt").forEach(b=>{
+      b.onclick=()=>{
+        const i=+b.dataset.i;
+        if(q.type==="multi"){
+          const on=b.getAttribute("aria-pressed")==="true";
+          b.setAttribute("aria-pressed",on?"false":"true");
+          selection = on ? selection.filter(x=>x!==i) : selection.concat(i);
+        }else{
+          plateau.querySelectorAll(".opt").forEach(o=>o.setAttribute("aria-pressed","false"));
+          b.setAttribute("aria-pressed","true"); selection=[i];
+        }
+      };
+    });
+  }
+  document.getElementById("valider").onclick = valider;
+  window.scrollTo({top:0,behavior:"instant"});
+}
+
+function valider(){
+  const ev = EVENEMENTS[iEv], q = ev.questions[iQ];
+  let juste=false, vide=false;
+  if(q.type==="num"){
+    const v=(document.getElementById("saisie").value||"").replace(/\D/g,""); if(!v) vide=true; else juste=v===q.bonne;
+  }else if(q.type==="grille"){
+    const ch=[...plateau.querySelectorAll(".ligne input")].map(c=>c.value.replace(/\D/g,""));
+    if(ch.some(v=>!v)) vide=true; else juste=ch.every((v,i)=>v===q.champs[i].bonne);
+  }else if(q.type==="vf"){
+    if(vfSel.some(v=>v===null)) vide=true; else juste=vfSel.every((v,i)=>v===q.items[i].bonne);
+  }else if(q.type==="multi"){
+    if(!selection.length) vide=true; else juste=selection.slice().sort((a,b)=>a-b).join(",")===q.bonnes.slice().sort((a,b)=>a-b).join(",");
+  }else{
+    if(!selection.length) vide=true; else juste=selection[0]===q.bonne;
+  }
+
+  const retour=document.getElementById("retour");
+  if(vide){ retour.innerHTML=`<div class="mention rect"><div class="tit">Séquence incomplète</div>Rien n'est versé à la procédure. Répondez à tous les points avant de valider.</div>`; return; }
+
+  essais++;
+  if(juste){ resoudre(true); return; }
+  penalite(60);
+  if(essais===1){
+    retour.innerHTML=`<div class="mention rect"><div class="tit">Rectification demandée — une minute perdue</div>La réponse ne peut pas être versée en l'état. ${esc(q.indice)}<br><br>Reprenez la séquence.</div>`;
+  }else{ resoudre(false); }
+}
+
+function resoudre(juste){
+  const ev = EVENEMENTS[iEv], q = ev.questions[iQ];
+  plateau.querySelectorAll(".opt").forEach(b=>{
+    const i=+b.dataset.i; b.classList.add("fige");
+    const ok = q.type==="multi" ? q.bonnes.includes(i) : i===q.bonne;
+    if(ok) b.classList.add("juste"); else if(b.getAttribute("aria-pressed")==="true") b.classList.add("faux");
+  });
+  plateau.querySelectorAll(".vf").forEach(ligne=>{
+    const i=+ligne.dataset.i; ligne.classList.add("fige");
+    const bon=q.items[i].bonne, don=vfSel[i], sol=ligne.querySelector(".sol");
+    sol.textContent=bon?"Vrai":"Faux"; sol.className="sol "+(don===bon?"ok":"ko");
+  });
+  const s=document.getElementById("saisie"); if(s){ s.disabled=true; if(!juste) s.value=q.bonne; }
+  plateau.querySelectorAll(".ligne input").forEach((c,i)=>{ c.disabled=true; if(!juste) c.value=q.champs[i].bonne; });
+
+  document.getElementById("valider").remove();
+  acquis.push({art:q.art, texte:q.mention, compare:q.compare||null, ev:ev.id, ok:juste});
+
+  const cmp = q.compare ? `<div class="compare"><div class="tit">Si c'était une préliminaire</div>${para(q.compare)}</div>` : "";
+  document.getElementById("retour").innerHTML=`
+    <div class="mention">
+      <div class="tit">${juste?"Séquence validée":"Correction versée à la procédure"}</div>
+      ${para(q.mention)}
+      <div class="art">${esc(q.art)}</div>
+    </div>
+    ${cmp}
+    <button class="action" id="suite">${iQ+1<ev.questions.length?"Séquence suivante":"Clore la phase"}</button>`;
+  document.getElementById("suite").onclick=()=>{ if(iQ+1<ev.questions.length){ iQ++; rendre(); } else sceau(ev); };
+  document.getElementById("suite").scrollIntoView({block:"nearest"});
+}
+
+function sceau(ev){
+  const d=document.createElement("div"); d.className="sceau";
+  d.innerHTML=`<div>
+    <div class="marque"><div class="l1">${esc(ev.id)} — close à ${esc(ev.heure)}</div><div class="l2">${esc(ev.gain.l2)}</div><div class="l3">${esc(ev.gain.l3)}</div></div>
+    <div class="suite"><button class="action" id="continuer">${iEv+1<EVENEMENTS.length?"Phase suivante":"Clore la garde à vue"}</button></div>
+  </div>`;
+  document.body.appendChild(d);
+  const b=d.querySelector("#continuer"); b.focus();
+  b.onclick=()=>{ d.remove(); if(iEv+1<EVENEMENTS.length){ iEv++; iQ=0; rendre(); } else finale(); };
+}
+
+/* ========================= VERROU FINAL ========================= */
+function finale(){
+  plateau.innerHTML=`
+  <div class="feuille">
+    <div class="entete">
+      <span class="tampon-cote">Synthèse</span>
+      <p class="qualif">Fiche de cadre — la flagrance</p>
+      <h2>Les six durées</h2>
+    </div>
+    <p class="recit">L'affaire est bouclée. Avant de refermer le dossier, reconstituez les six durées qui commandent la flagrance et la garde à vue. Toutes ont été rencontrées au cours de la mission.</p>
+    <div class="grille" id="syn">
+      ${SYNTHESE.map((c,i)=>`<div class="ligne"><p>${esc(c.label)}</p><input type="text" inputmode="numeric" maxlength="3" data-i="${i}" aria-label="${esc(c.label)}"><span class="unite">${esc(c.unite)}</span></div>`).join("")}
+    </div>
+    <button class="action" id="remettre">Refermer le dossier</button>
+    <div id="retour"></div>
+  </div>`;
+  const ch=[...plateau.querySelectorAll("#syn input")];
+  ch.forEach((c,i)=>c.addEventListener("keydown",e=>{if(e.key==="Enter"){ if(ch[i+1]) ch[i+1].focus(); else document.getElementById("remettre").click(); }}));
+  ch[0].focus();
+  document.getElementById("remettre").onclick=()=>{
+    const v=ch.map(c=>c.value.replace(/\D/g,""));
+    if(v.some(x=>!x)){ document.getElementById("retour").innerHTML=`<div class="mention rect"><div class="tit">Fiche incomplète</div>Six durées sont attendues.</div>`; return; }
+    const faux=v.map((x,i)=>x===SYNTHESE[i].bonne?null:i).filter(x=>x!==null);
+    if(!faux.length){ clearInterval(chrono); bilan(); }
+    else{ penalite(60); document.getElementById("retour").innerHTML=`<div class="mention rect"><div class="tit">Fiche refusée — une minute perdue</div>${faux.length} ligne${faux.length>1?"s":""} à revoir. Ces six nombres ont tous été donnés pendant la mission.</div>`; }
+  };
+  window.scrollTo({top:0,behavior:"instant"});
+}
+
+function bilan(){
+  const total=acquis.length, justes=acquis.filter(a=>a.ok).length;
+  const utilise=DUREE-reste, retard=reste<0;
+  plateau.innerHTML=`
+  <div class="feuille">
+    <div class="entete">
+      <span class="tampon-cote">Clôture</span>
+      <p class="qualif">${retard?"Procédure bouclée hors délai":"Procédure bouclée"}</p>
+      <h1>${retard?"L'affaire a traîné":"Flagrance maîtrisée"}</h1>
+    </div>
+    <p class="recit">${retard
+      ? "Le raisonnement est là, le tempo non. En flagrance, l'urgence fait partie du cadre : la lenteur fait perdre les pouvoirs coercitifs autant que le temps."
+      : "De la saisine à la fin de garde à vue, dans le cadre le plus musclé de la procédure. La Mission II — l'enquête préliminaire — reprendra la même colonne vertébrale, mais sans filet coercitif."}</p>
+
+    <div class="bilan">
+      <div><span>Séquences traitées</span><b>${total}</b></div>
+      <div><span>Justes du premier coup</span><b>${justes}/${total}</b></div>
+      <div><span>Temps d'investigation</span><b>${fmt(utilise)}</b></div>
+      <div><span>Minutes perdues</span><b>${Math.round(penalites/60)}</b></div>
+    </div>
+
+    <h2 style="margin-bottom:.8rem">Fiche de révision — la flagrance et ses bascules</h2>
+    <ul class="fiche">
+      ${acquis.map(a=>`<li><b>${esc(a.art)} — ${esc(a.ev)}${a.ok?"":" · reprise"}</b>${para(a.texte)}${a.compare?`<br><br><span style="color:var(--ambre)">⇄ En préliminaire —</span> ${para(a.compare)}`:""}</li>`).join("")}
+    </ul>
+
+    <button class="action" id="imprimer">Imprimer la fiche</button>
+    <button class="action mineur" id="rejouer">Reprendre l'affaire</button>
+  </div>
+  <p class="pied">Diptyque des cadres · Mission I — Mission II : l'enquête préliminaire</p>`;
+  document.getElementById("imprimer").onclick=()=>window.print();
+  document.getElementById("rejouer").onclick=()=>{ reste=DUREE; demarre=false; iEv=0; iQ=0; penalites=0; acquis.length=0; pendule(); accueil(); };
+  window.scrollTo({top:0,behavior:"instant"});
+}
+
+pendule();
+accueil();
+</script>
+</body>
+</html>
