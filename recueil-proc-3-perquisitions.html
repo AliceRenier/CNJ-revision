@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recueil · Procédure pénale III — Perquisitions, fouilles & scellés</title>
+<style>
+/* =====================================================================
+   MOTEUR CNJ — styles partagés
+   Utilisé par toutes les missions du recueil d'annales.
+   Thème par défaut : violet (neutre). Variante rouge via [data-theme=rouge].
+   ===================================================================== */
+:root{
+  --bureau:#3C4642; --bureau-fonce:#2E3835;
+  --pelure:#D9DFD6; --pelure-ombre:#C3CCC1;
+  --encre:#19221F; --encre-pale:#5A6863;
+  --tampon:#4A2E7A; --tampon-voile:rgba(74,46,122,.12);
+  --rouge:#9C3125; --rouge-voile:rgba(156,49,37,.09); --vert:#2F6B48;
+  --ambre:#8A5A00; --ambre-voile:rgba(138,90,0,.09);
+  --accent:var(--tampon); --accent-tag:#B9A6E0; --accent-tag-txt:#C9B8E8;
+  --mono:"Courier New",Courier,ui-monospace,monospace;
+  --etroit:"Arial Narrow","Helvetica Neue Condensed",Arial,sans-serif;
+}
+[data-theme="rouge"]{ --accent:var(--rouge); --accent-tag:#E4A79C; --accent-tag-txt:#E4A79C; }
+*{box-sizing:border-box} html,body{margin:0;padding:0}
+body{background:var(--bureau);
+  background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.06) 0 1px,transparent 1px 4px),radial-gradient(120% 80% at 50% 0%,rgba(255,255,255,.06),transparent 60%);
+  color:var(--encre);font-family:var(--mono);font-size:16px;line-height:1.55;min-height:100vh}
+header{position:sticky;top:0;z-index:30;background:var(--bureau-fonce);border-bottom:2px solid #1D2422;color:#C8D2CC;
+  padding:.5rem clamp(.7rem,3vw,1.6rem);display:flex;align-items:center;gap:clamp(.6rem,3vw,2rem);flex-wrap:wrap}
+.serv{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.68rem;line-height:1.3;opacity:.7}
+.serv b{display:block;font-weight:400;letter-spacing:.22em;opacity:.55;font-size:.6rem}
+.cadre-tag{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;border:1.5px solid var(--accent-tag);color:var(--accent-tag-txt);padding:.14rem .5rem}
+.pendule{margin-left:auto;text-align:right}
+.pendule .h{font-size:clamp(1.3rem,5vw,1.7rem);font-weight:bold;letter-spacing:.06em;color:#EDEFE9}
+.pendule .r{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.62rem;opacity:.65}
+.pendule.tendu .h{color:#E4A79C}
+.jauge{position:absolute;left:0;bottom:0;height:2px;background:var(--accent);width:0%;transition:width 1s linear}
+
+main{max-width:800px;margin:0 auto;padding:clamp(1rem,4vw,2.6rem) clamp(.7rem,4vw,1.5rem) 5rem}
+.feuille{position:relative;background:var(--pelure);background-image:linear-gradient(180deg,rgba(255,255,255,.5),transparent 18%);
+  box-shadow:0 1px 0 var(--pelure-ombre),0 14px 34px rgba(0,0,0,.34);
+  padding:clamp(1.1rem,4vw,2.2rem) clamp(1rem,4vw,2.4rem) clamp(1.4rem,4vw,2.2rem) clamp(1.9rem,6vw,3.4rem)}
+.feuille::before{content:"";position:absolute;top:0;bottom:0;left:clamp(1.1rem,3.5vw,2rem);width:1px;background:rgba(74,46,122,.35)}
+.entete{border-bottom:1px solid rgba(25,34,31,.25);padding-bottom:.8rem;margin-bottom:1.3rem}
+.tampon-cote{float:right;margin:-.3rem -.4rem .4rem 1rem;border:1.5px solid var(--accent);color:var(--accent);
+  font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.7rem;padding:.18rem .5rem;transform:rotate(1.6deg)}
+.qualif{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.2em;font-size:.66rem;color:var(--encre-pale);margin:0 0 .35rem}
+h1,h2{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.07em;font-weight:bold;margin:0;line-height:1.15}
+h1{font-size:clamp(1.35rem,5.5vw,2rem)} h2{font-size:clamp(1.05rem,4.4vw,1.35rem)}
+.recit{white-space:pre-line;margin:0 0 1.4rem;font-size:.95rem}
+.recit em{font-style:normal;background:rgba(74,46,122,.13);padding:0 .18em}
+
+.question{border-top:1px dashed rgba(25,34,31,.3);padding-top:1.2rem}
+.compteur{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;color:var(--encre-pale);margin-bottom:.5rem}
+.enonce{font-weight:bold;margin:0 0 1rem;font-size:1rem}
+.consigne{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.64rem;color:var(--accent);margin:-.6rem 0 .9rem}
+
+.opt{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:rgba(255,255,255,.42);
+  border:1px solid rgba(25,34,31,.28);padding:.65rem .8rem .65rem 2.4rem;margin-bottom:.5rem;cursor:pointer;position:relative;transition:background .12s,border-color .12s}
+.opt::before{content:"";position:absolute;left:.85rem;top:.95rem;width:.72rem;height:.72rem;border:1px solid var(--encre-pale)}
+.opt:hover{background:#fff;border-color:var(--encre)}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--tampon-voile)}
+.opt[aria-pressed="true"]::before{background:var(--accent);border-color:var(--accent)}
+.opt:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.opt.fige{pointer-events:none;opacity:.72}
+.opt.juste{border-color:var(--vert);background:rgba(47,107,72,.14)}
+.opt.juste::before{background:var(--vert);border-color:var(--vert)}
+.opt.faux{border-color:var(--rouge);background:rgba(156,49,37,.1)}
+
+.vf{display:flex;gap:.6rem;align-items:flex-start;border-bottom:1px dotted rgba(25,34,31,.28);padding:.7rem 0}
+.vf p{margin:0;flex:1;font-size:.93rem}
+.vf .paire{display:flex;gap:.3rem;flex:0 0 auto}
+.vf button{font:inherit;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.12em;font-size:.68rem;background:rgba(255,255,255,.5);border:1px solid rgba(25,34,31,.3);color:var(--encre-pale);padding:.35rem .6rem;cursor:pointer}
+.vf button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#F1EDF7}
+.vf.fige button{pointer-events:none}
+.vf .sol{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.64rem;flex:0 0 auto;padding-top:.45rem}
+.vf .sol.ok{color:var(--vert)} .vf .sol.ko{color:var(--rouge)}
+
+.grille{margin-bottom:.6rem}
+.ligne{display:flex;align-items:baseline;gap:.7rem;border-bottom:1px dotted rgba(25,34,31,.28);padding:.55rem 0;flex-wrap:wrap}
+.ligne p{margin:0;flex:1;min-width:12rem;font-size:.93rem}
+.ligne input{font:inherit;font-size:1.25rem;font-weight:bold;width:3.6rem;text-align:center;background:transparent;border:none;border-bottom:2px solid var(--encre);color:var(--encre);padding:.05rem .1rem}
+.ligne .unite{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.68rem;color:var(--encre-pale);width:4rem}
+.ligne input:disabled{color:var(--encre-pale);border-bottom-style:dotted}
+
+.saisie{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.4rem}
+input[type=text]{font:inherit;font-size:1.5rem;font-weight:bold;width:5.5rem;text-align:center;background:transparent;border:none;border-bottom:2px solid var(--encre);color:var(--encre);padding:.1rem .2rem}
+.unite{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;color:var(--encre-pale)}
+
+button.action{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-weight:bold;font-size:.78rem;background:var(--accent);color:#F1EDF7;border:none;padding:.72rem 1.5rem;cursor:pointer;margin-top:.7rem}
+button.action:hover{filter:brightness(1.15)}
+button.mineur{background:transparent;color:var(--encre-pale);border:1px solid rgba(25,34,31,.3);margin-left:.5rem}
+button.mineur:hover{background:rgba(0,0,0,.05);color:var(--encre)}
+
+.mention{margin-top:1.2rem;padding:.9rem 1rem;font-size:.9rem;border-left:3px solid var(--accent);background:rgba(255,255,255,.5)}
+.mention.rect{border-left-color:var(--rouge)}
+.mention .tit{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;color:var(--accent);margin-bottom:.35rem}
+.mention.rect .tit{color:var(--rouge)}
+.mention .art{display:inline-block;margin-top:.55rem;border:1px solid var(--accent);color:var(--accent);font-family:var(--etroit);text-transform:uppercase;letter-spacing:.12em;font-size:.64rem;padding:.12rem .45rem}
+
+.compare{margin-top:.9rem;padding:.8rem 1rem;border:1px dashed var(--ambre);background:var(--ambre-voile);font-size:.87rem}
+.compare .tit{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:var(--ambre);margin-bottom:.35rem;display:flex;align-items:center;gap:.5rem}
+.compare .tit::before{content:"⇄";font-size:.9rem}
+
+.note{margin-top:.9rem;padding:.8rem 1rem;border:1px dashed var(--encre-pale);background:rgba(255,255,255,.35);font-size:.85rem;color:var(--encre-pale)}
+.note .tit{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.6rem;margin-bottom:.3rem}
+
+.sceau{position:fixed;inset:0;display:grid;place-items:center;background:rgba(30,36,34,.72);z-index:60;padding:1rem}
+.sceau .marque{border:4px double var(--accent);color:var(--accent);background:rgba(233,236,231,.96);padding:1.3rem 1.9rem;text-align:center;transform:rotate(-7deg) scale(2.6);opacity:0;animation:frappe .5s cubic-bezier(.2,1.4,.4,1) forwards}
+.sceau .marque .l1{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.28em;font-size:.7rem}
+.sceau .marque .l2{font-size:clamp(1.5rem,6.5vw,2.4rem);font-weight:bold;letter-spacing:.04em;line-height:1.15}
+.sceau .marque .l3{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;opacity:.8;margin-top:.3rem}
+@keyframes frappe{to{transform:rotate(-7deg) scale(1);opacity:1}}
+.sceau .suite{margin-top:1.6rem;text-align:center}
+
+.bilan{display:flex;gap:1.6rem;flex-wrap:wrap;margin:1.2rem 0 1.6rem}
+.bilan div span{display:block;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:var(--encre-pale)}
+.bilan div b{font-size:1.5rem}
+ul.fiche{padding-left:1.1rem}
+.fiche li{margin-bottom:.8rem;font-size:.9rem}
+.fiche li b{display:block;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.1em;font-size:.7rem;color:var(--accent)}
+.pied{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:#9AA69F;text-align:center;margin-top:2rem}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{body{background:#fff}header,button{display:none}.feuille{box-shadow:none;background:#fff}}
+
+</style>
+</head>
+<body></body>
+<script>
+"use strict";
+/* =====================================================================
+   MOTEUR CNJ — logique partagée
+   Une mission = un objet de config passé à CNJ.run(cfg).
+   Types de question : qcm, multi, num, vf, grille. Champ optionnel
+   "compare" (encadré comparatif). Voir un fichier mission pour la forme.
+   ===================================================================== */
+window.CNJ = (function(){
+
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function recit(t){return esc(t).replace(/&lt;em&gt;/g,"<em>").replace(/&lt;\/em&gt;/g,"</em>").replace(/\n/g,"<br>");}
+function para(t){return esc(t).replace(/\n/g,"<br>");}
+function fmt(s){const m=Math.floor(Math.abs(s)/60),r=Math.abs(s)%60;return (s<0?"-":"")+String(m).padStart(2,"0")+":"+String(r).padStart(2,"0");}
+
+function run(cfg){
+  const EV = cfg.events, SYN = cfg.synthese||null;
+  const P = cfg.pendule||{};
+  const DUREE = (P.durationMin||30)*60;
+  const H_DEBUT = (P.debutMin!=null)?P.debutMin:null, H_FIN=(P.finMin!=null)?P.finMin:null;
+  const cartonWord = cfg.cartonWord||"Phase", subWord = cfg.subWord||"séquence";
+  let reste=DUREE, chrono=null, demarre=false;
+  let iEv=0,iQ=0,penalites=0,selection=[],vfSel=[],essais=0;
+  const acquis=[];
+
+  /* ------- structure de page ------- */
+  document.body.setAttribute("data-theme", cfg.theme||"violet");
+  document.body.innerHTML = `
+  <header>
+    <div class="serv"><b>${esc((cfg.serv&&cfg.serv.b)||"")}</b>${esc((cfg.serv&&cfg.serv.a)||"")}</div>
+    ${cfg.cadreTag?`<span class="cadre-tag">${esc(cfg.cadreTag)}</span>`:""}
+    <div class="pendule" id="pendule">
+      <div class="h" id="heure">${esc(P.startClock||fmt(DUREE))}</div>
+      <div class="r" id="reste">${esc(P.label||"")}</div>
+    </div>
+    <div class="jauge" id="jauge"></div>
+  </header>
+  <main id="plateau"></main>`;
+
+  const plateau=document.getElementById("plateau");
+  const elHeure=document.getElementById("heure");
+  const elReste=document.getElementById("reste");
+  const elJauge=document.getElementById("jauge");
+  const elPendule=document.getElementById("pendule");
+
+  function pendule(){
+    const ecoule=Math.min(DUREE-reste,DUREE);
+    if(H_DEBUT!=null&&H_FIN!=null){
+      const t=H_DEBUT+(ecoule/DUREE)*(H_FIN-H_DEBUT);
+      const h=Math.floor(t/60)%24,m=Math.floor(t%60);
+      elHeure.textContent=String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");
+    }else{
+      elHeure.textContent=fmt(reste);
+    }
+    elReste.textContent = reste>0 ? "Reste "+fmt(reste)+" "+(P.remainingLabel||"") : (P.overLabel||"Temps dépassé")+" — "+fmt(reste);
+    elJauge.style.width=Math.min(100,(ecoule/DUREE)*100)+"%";
+    elPendule.classList.toggle("tendu",reste<=(P.tendu||300));
+  }
+  function lancer(){ if(demarre)return; demarre=true; chrono=setInterval(()=>{reste--;pendule();},1000); }
+  function penalite(s){ reste-=s; penalites+=s; pendule(); }
+
+  /* ------- accueil ------- */
+  function accueil(){
+    const nbQ=EV.reduce((n,e)=>n+e.questions.length,0);
+    const A=cfg.accueil||{};
+    plateau.innerHTML=`
+    <div class="feuille">
+      <div class="entete">
+        <p class="qualif">${esc(A.kicker||"")}</p>
+        <h1>${esc(A.titre||"")}</h1>
+      </div>
+      <p class="recit">${recit((A.intro||"").replace("{nbQ}",nbQ))}</p>
+      <button class="action" id="go">${esc(A.cta||"Commencer")}</button>
+      ${A.foot?`<p class="pied" style="text-align:left;margin-top:1.4rem">${esc(A.foot)}</p>`:""}
+    </div>`;
+    document.getElementById("go").onclick=()=>{ lancer(); rendre(); };
+  }
+
+  /* ------- rendu d'une question ------- */
+  function rendre(){
+    const ev=EV[iEv],q=ev.questions[iQ];
+    selection=[]; vfSel=(q.type==="vf")?q.items.map(()=>null):[]; essais=0;
+
+    let champ="";
+    if(q.type==="num"){
+      champ=`<div class="saisie"><input type="text" id="saisie" inputmode="numeric" autocomplete="off" maxlength="3" aria-label="Réponse"><span class="unite">${esc(q.unite||"")}</span></div>`;
+    }else if(q.type==="grille"){
+      champ=`<div class="grille">`+q.champs.map((c,i)=>`<div class="ligne"><p>${esc(c.label)}</p><input type="text" inputmode="numeric" maxlength="3" data-i="${i}" aria-label="${esc(c.label)}"><span class="unite">${esc(c.unite)}</span></div>`).join("")+`</div>`;
+    }else if(q.type==="vf"){
+      champ=q.items.map((it,i)=>`<div class="vf" data-i="${i}"><p>${esc(it.label)}</p><span class="paire"><button type="button" data-v="1" aria-pressed="false">Vrai</button><button type="button" data-v="0" aria-pressed="false">Faux</button></span><span class="sol"></span></div>`).join("");
+    }else{
+      champ=q.options.map((o,i)=>`<button class="opt" type="button" data-i="${i}" aria-pressed="false">${esc(o)}</button>`).join("");
+    }
+
+    plateau.innerHTML=`
+    <div class="feuille">
+      <div class="entete">
+        <span class="tampon-cote">${esc(ev.id)}${ev.heure?` · ${esc(ev.heure)}`:""}</span>
+        <p class="qualif">${esc(ev.nature||"")}</p>
+        <h2>${esc(ev.titre)}</h2>
+        ${iQ===0&&ev.recit?`<p class="recit" style="margin-top:1.1rem">${recit(ev.recit)}</p>`:``}
+      </div>
+      <div class="question">
+        <p class="compteur">${esc(cartonWord)} ${iEv+1} sur ${EV.length} — ${esc(subWord)} ${iQ+1} sur ${ev.questions.length}</p>
+        <p class="enonce">${esc(q.enonce)}</p>
+        ${q.consigne?`<p class="consigne">${esc(q.consigne)}</p>`:""}
+        ${champ}
+        <button class="action" id="valider">${esc(cfg.validerLabel||"Valider")}</button>
+        <div id="retour"></div>
+      </div>
+    </div>
+    ${cfg.penaltyLabel?`<p class="pied">${esc(cfg.penaltyLabel)}</p>`:""}`;
+
+    if(q.type==="num"){
+      const s=document.getElementById("saisie"); s.focus();
+      s.addEventListener("keydown",e=>{if(e.key==="Enter")valider();});
+    }else if(q.type==="grille"){
+      const ch=[...plateau.querySelectorAll(".ligne input")];
+      ch.forEach((c,i)=>c.addEventListener("keydown",e=>{if(e.key==="Enter"){ if(ch[i+1])ch[i+1].focus(); else valider(); }}));
+      ch[0].focus();
+    }else if(q.type==="vf"){
+      plateau.querySelectorAll(".vf").forEach(ligne=>{
+        const i=+ligne.dataset.i;
+        ligne.querySelectorAll("button").forEach(b=>{ b.onclick=()=>{ ligne.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); vfSel[i]=b.dataset.v==="1"; }; });
+      });
+    }else{
+      plateau.querySelectorAll(".opt").forEach(b=>{
+        b.onclick=()=>{
+          const i=+b.dataset.i;
+          if(q.type==="multi"){ const on=b.getAttribute("aria-pressed")==="true"; b.setAttribute("aria-pressed",on?"false":"true"); selection=on?selection.filter(x=>x!==i):selection.concat(i); }
+          else{ plateau.querySelectorAll(".opt").forEach(o=>o.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); selection=[i]; }
+        };
+      });
+    }
+    document.getElementById("valider").onclick=valider;
+    window.scrollTo({top:0,behavior:"instant"});
+  }
+
+  /* ------- validation ------- */
+  function valider(){
+    const ev=EV[iEv],q=ev.questions[iQ];
+    let juste=false,vide=false;
+    if(q.type==="num"){ const v=(document.getElementById("saisie").value||"").replace(/\D/g,""); if(!v)vide=true; else juste=v===String(q.bonne); }
+    else if(q.type==="grille"){ const ch=[...plateau.querySelectorAll(".ligne input")].map(c=>c.value.replace(/\D/g,"")); if(ch.some(v=>!v))vide=true; else juste=ch.every((v,i)=>v===String(q.champs[i].bonne)); }
+    else if(q.type==="vf"){ if(vfSel.some(v=>v===null))vide=true; else juste=vfSel.every((v,i)=>v===q.items[i].bonne); }
+    else if(q.type==="multi"){ if(!selection.length)vide=true; else juste=selection.slice().sort((a,b)=>a-b).join(",")===q.bonnes.slice().sort((a,b)=>a-b).join(","); }
+    else{ if(!selection.length)vide=true; else juste=selection[0]===q.bonne; }
+
+    const retour=document.getElementById("retour");
+    if(vide){ retour.innerHTML=`<div class="mention rect"><div class="tit">Réponse incomplète</div>Répondez à tous les points avant de valider.</div>`; return; }
+    essais++;
+    if(juste){ resoudre(true); return; }
+    penalite(60);
+    if(essais===1){ retour.innerHTML=`<div class="mention rect"><div class="tit">À revoir — une minute perdue</div>${esc(q.indice||"Reprenez la question.")}<br><br>Reprenez la réponse.</div>`; }
+    else{ resoudre(false); }
+  }
+
+  /* ------- correction ------- */
+  function resoudre(juste){
+    const ev=EV[iEv],q=ev.questions[iQ];
+    plateau.querySelectorAll(".opt").forEach(b=>{
+      const i=+b.dataset.i; b.classList.add("fige");
+      const ok=q.type==="multi"?q.bonnes.includes(i):i===q.bonne;
+      if(ok)b.classList.add("juste"); else if(b.getAttribute("aria-pressed")==="true")b.classList.add("faux");
+    });
+    plateau.querySelectorAll(".vf").forEach(ligne=>{
+      const i=+ligne.dataset.i; ligne.classList.add("fige");
+      const bon=q.items[i].bonne,don=vfSel[i],sol=ligne.querySelector(".sol");
+      sol.textContent=bon?"Vrai":"Faux"; sol.className="sol "+(don===bon?"ok":"ko");
+    });
+    const s=document.getElementById("saisie"); if(s){ s.disabled=true; if(!juste)s.value=q.bonne; }
+    plateau.querySelectorAll(".ligne input").forEach((c,i)=>{ c.disabled=true; if(!juste)c.value=q.champs[i].bonne; });
+
+    document.getElementById("valider").remove();
+    acquis.push({art:q.art||"",texte:q.mention||"",compare:q.compare||null,ev:ev.id,ok:juste});
+
+    const cmp=q.compare?`<div class="compare"><div class="tit">${esc(cfg.compareLabel||"Pour comparer")}</div>${para(q.compare)}</div>`:"";
+    const last=iQ+1>=ev.questions.length;
+    document.getElementById("retour").innerHTML=`
+      <div class="mention">
+        <div class="tit">${juste?(cfg.okTag||"Validé"):(cfg.koTag||"Correction")}</div>
+        ${para(q.mention||"")}
+        ${q.art?`<div class="art">${esc(q.art)}</div>`:""}
+      </div>
+      ${cmp}
+      <button class="action" id="suite">${last?(cfg.closeCartonLabel||"Suivant"):(cfg.nextLabel||"Suivant")}</button>`;
+    document.getElementById("suite").onclick=()=>{ if(!last){ iQ++; rendre(); } else sceau(ev); };
+    document.getElementById("suite").scrollIntoView({block:"nearest"});
+  }
+
+  /* ------- sceau de fin d'événement ------- */
+  function sceau(ev){
+    const d=document.createElement("div"); d.className="sceau";
+    const g=ev.gain||{};
+    const last=iEv+1>=EV.length;
+    d.innerHTML=`<div>
+      <div class="marque"><div class="l1">${esc(ev.id)}${g.l1?` — ${esc(g.l1)}`:""}</div><div class="l2">${esc(g.l2||"")}</div><div class="l3">${esc(g.l3||"")}</div></div>
+      <div class="suite"><button class="action" id="continuer">${last?(cfg.toFinalLabel||"Terminer"):(cfg.nextCartonLabel||"Suivant")}</button></div>
+    </div>`;
+    document.body.appendChild(d);
+    const b=d.querySelector("#continuer"); b.focus();
+    b.onclick=()=>{ d.remove(); if(!last){ iEv++; iQ=0; rendre(); } else (SYN?finale():bilan()); };
+  }
+
+  /* ------- verrou final (grille de synthèse) ------- */
+  function finale(){
+    plateau.innerHTML=`
+    <div class="feuille">
+      <div class="entete">
+        <span class="tampon-cote">${esc((cfg.final&&cfg.final.tampon)||"Synthèse")}</span>
+        <p class="qualif">${esc(SYN.kicker||"")}</p>
+        <h2>${esc(SYN.titre||"Synthèse")}</h2>
+      </div>
+      <p class="recit">${recit(SYN.intro||"")}</p>
+      <div class="grille" id="syn">
+        ${SYN.champs.map((c,i)=>`<div class="ligne"><p>${esc(c.label)}</p><input type="text" inputmode="numeric" maxlength="3" data-i="${i}" aria-label="${esc(c.label)}"><span class="unite">${esc(c.unite)}</span></div>`).join("")}
+      </div>
+      <button class="action" id="remettre">${esc(SYN.cta||"Valider")}</button>
+      <div id="retour"></div>
+    </div>`;
+    const ch=[...plateau.querySelectorAll("#syn input")];
+    ch.forEach((c,i)=>c.addEventListener("keydown",e=>{if(e.key==="Enter"){ if(ch[i+1])ch[i+1].focus(); else document.getElementById("remettre").click(); }}));
+    ch[0].focus();
+    document.getElementById("remettre").onclick=()=>{
+      const v=ch.map(c=>c.value.replace(/\D/g,""));
+      if(v.some(x=>!x)){ document.getElementById("retour").innerHTML=`<div class="mention rect"><div class="tit">Fiche incomplète</div>${SYN.champs.length} repères sont attendus.</div>`; return; }
+      const faux=v.map((x,i)=>x===String(SYN.champs[i].bonne)?null:i).filter(x=>x!==null);
+      if(!faux.length){ clearInterval(chrono); bilan(); }
+      else{ penalite(60); document.getElementById("retour").innerHTML=`<div class="mention rect"><div class="tit">À revoir — une minute perdue</div>${faux.length} repère${faux.length>1?"s":""} à corriger. Tous ont été vus dans la mission.</div>`; }
+    };
+    window.scrollTo({top:0,behavior:"instant"});
+  }
+
+  /* ------- bilan + fiche imprimable ------- */
+  function bilan(){
+    clearInterval(chrono);
+    const total=acquis.length,justes=acquis.filter(a=>a.ok).length,utilise=DUREE-reste,retard=reste<0;
+    const F=cfg.final||{};
+    plateau.innerHTML=`
+    <div class="feuille">
+      <div class="entete">
+        <span class="tampon-cote">Clôture</span>
+        <p class="qualif">${esc(retard?(F.koKicker||"Terminé hors délai"):(F.okKicker||"Terminé"))}</p>
+        <h1>${esc(retard?(F.koTitle||"Le temps a manqué"):(F.okTitle||"Mission bouclée"))}</h1>
+      </div>
+      <p class="recit">${recit(retard?(F.koText||""):(F.okText||""))}</p>
+      <div class="bilan">
+        <div><span>${esc(cfg.subWordPlural||"Questions traitées")}</span><b>${total}</b></div>
+        <div><span>Justes du premier coup</span><b>${justes}/${total}</b></div>
+        <div><span>Temps utilisé</span><b>${fmt(utilise)}</b></div>
+        <div><span>Minutes perdues</span><b>${Math.round(penalites/60)}</b></div>
+      </div>
+      <h2 style="margin-bottom:.8rem">${esc(F.ficheTitle||"Fiche de révision")}</h2>
+      <ul class="fiche">
+        ${acquis.map(a=>`<li><b>${esc(a.art)} — ${esc(a.ev)}${a.ok?"":" · reprise"}</b>${para(a.texte)}${a.compare?`<br><br><span style="color:var(--ambre)">⇄</span> ${para(a.compare)}`:""}</li>`).join("")}
+      </ul>
+      <button class="action" id="imprimer">Imprimer la fiche</button>
+      <button class="action mineur" id="rejouer">${esc(F.replayLabel||"Recommencer")}</button>
+    </div>
+    ${F.foot?`<p class="pied">${esc(F.foot)}</p>`:""}`;
+    document.getElementById("imprimer").onclick=()=>window.print();
+    document.getElementById("rejouer").onclick=()=>{ reste=DUREE; demarre=false; iEv=0; iQ=0; penalites=0; acquis.length=0; pendule(); accueil(); };
+    window.scrollTo({top:0,behavior:"instant"});
+  }
+
+  pendule(); accueil();
+}
+
+return { run };
+})();
+
+</script>
+<script>
+CNJ.run({
+  theme:"violet",
+  serv:{a:"Recueil d'annales · Procédure pénale · Carton III", b:"École nationale de police — salle de révision"},
+  cadreTag:"Thème : Procédure pénale",
+  pendule:{startClock:"20:00",label:"Épreuve blanche à 21:00",remainingLabel:"de révision",overLabel:"L'épreuve commence",durationMin:30,debutMin:1200,finMin:1260,tendu:300},
+  cartonWord:"Carton", subWord:"fiche", subWordPlural:"Fiches traitées",
+  validerLabel:"Valider la fiche", nextLabel:"Fiche suivante", closeCartonLabel:"Carton suivant",
+  nextCartonLabel:"Carton suivant", toFinalLabel:"Fiche finale", penaltyLabel:"Une erreur = une minute de révision",
+  okTag:"Fiche acquise", koTag:"Correction",
+  accueil:{
+    kicker:"Recueil d'annales — procédure pénale · mission III",
+    titre:"Perquisitions, fouilles & scellés",
+    intro:"Là où le formalisme fait la loi. {nbQ} fiches : l'assentiment et l'autorisation du JLD en préliminaire, les heures et la présence, les fouilles de sécurité et intégrales, les scellés et l'enregistrement des auditions.\n\nUne erreur coûte <em>une minute</em>. Tout est corrigé, article à l'appui.\n\nVerrou final : les repères du domicile et de la perquisition.",
+    cta:"Ouvrir le premier carton",
+    foot:"Thème procédure pénale — durée estimée 30 minutes — jeu solo, hors connexion"
+  },
+  events:[
+    {id:"CARTON I",heure:"Perquisition",titre:"Perquisitionner selon le cadre",nature:"Fiche de révision — assentiment, heures, présence",gain:{l1:"bouclé",l2:"ART. 76",l3:"Assentiment ou JLD"},
+     recit:"« La perquisition, c'est deux régimes en un. Dis-moi ce qui change entre la flagrance et la préliminaire, et ce qui ne change jamais. »",
+     questions:[
+      {type:"qcm",enonce:"Comment nomme-t-on la déclaration écrite par laquelle une personne consent à la perquisition de son domicile en enquête préliminaire ?",
+       options:["L'assentiment, exprès et manuscrit","Le consentement tacite","L'autorisation de perquisition","La réquisition de l'occupant"],
+       bonne:0,indice:"Un accord qui doit être écrit de la main de l'intéressé.",
+       mention:"L'assentiment exprès, sous forme d'une déclaration écrite de la main de l'intéressé. Sans lui, pas de perquisition en préliminaire — sauf autorisation du juge des libertés et de la détention.",art:"Art. 76 CPP"},
+      {type:"qcm",enonce:"En enquête préliminaire, quelle est la formalité à accomplir auprès de la personne concernée par la perquisition ?",
+       options:["Recueillir son assentiment exprès et écrit","Lui notifier ses droits de gardé à vue","Obtenir une renonciation à l'avocat","Lui remettre une convocation"],
+       bonne:0,indice:"La même déclaration manuscrite que la fiche précédente.",
+       mention:"On recueille l'assentiment exprès et écrit. C'est la contrepartie de l'absence de coercition d'office en préliminaire : sans accord signé, l'acte est nul, sauf autorisation du JLD.",art:"Art. 76 CPP"},
+      {type:"qcm",enonce:"Quels article et code prévoient les perquisitions en enquête préliminaire ?",
+       options:["L'article 76 du code de procédure pénale","L'article 56 du code de procédure pénale","L'article 59 du code pénal","L'article 78-2 du code de procédure pénale"],
+       bonne:0,indice:"Le régime de la perquisition préliminaire a son article dédié.",
+       mention:"L'article 76 du code de procédure pénale régit la perquisition en enquête préliminaire (assentiment, et autorisation du JLD à son alinéa 4). L'article 56 vise, lui, la flagrance.",art:"Art. 76 CPP"},
+      {type:"qcm",enonce:"Quel magistrat peut autoriser une perquisition en enquête préliminaire sans l'assentiment de la personne concernée ?",
+       options:["Le juge des libertés et de la détention","Le procureur de la République","Le juge d'instruction","Le président du tribunal judiciaire"],
+       bonne:0,indice:"Un magistrat du siège, saisi par le procureur.",
+       mention:"Le juge des libertés et de la détention, saisi par le procureur, peut autoriser la perquisition sans assentiment, par décision écrite et motivée, pour un crime ou un délit puni d'au moins trois ans d'emprisonnement.",art:"Art. 76 al. 4 CPP"},
+      {type:"qcm",enonce:"En droit commun, quelle obligation de temps la perquisition d'un domicile doit-elle respecter ?",
+       options:["Avoir lieu entre 6 heures et 21 heures","Avoir lieu entre 8 heures et 20 heures","Aucune, dès lors qu'il y a assentiment","Avoir lieu de jour, sans horaire précis"],
+       bonne:0,indice:"La fenêtre légale du domicile, commune à la flagrance et à la préliminaire.",
+       mention:"Entre 6 heures et 21 heures : c'est le commencement de la perquisition qui est encadré. Cette règle des heures légales vaut dans les deux cadres — elle protège le domicile.",art:"Art. 59 CPP"},
+      {type:"multi",enonce:"La personne chez qui vous devez perquisitionner ne peut être présente. Quelles sont vos possibilités ?",consigne:"Deux réponses attendues",
+       options:["Qu'elle désigne un représentant de son choix","Réaliser la perquisition en présence de deux témoins","Réaliser la perquisition sans aucun témoin","Reporter la perquisition à sa présence obligatoire"],
+       bonnes:[0,1],indice:"Un représentant d'abord, deux témoins à défaut.",
+       mention:"Si la personne est absente ou empêchée, elle peut désigner un représentant de son choix ; à défaut, l'OPJ requiert deux témoins étrangers au service. Cette formalité garantit la valeur des saisies.",art:"Art. 57 CPP"},
+      {type:"qcm",enonce:"Afin d'éviter la nullité de l'acte, qui peut se substituer à l'occupant absent lors d'une perquisition ?",
+       options:["Un représentant de son choix, ou deux témoins","Un simple voisin","Un représentant, sans autre précision","L'avocat de permanence"],
+       bonne:0,indice:"Attention à la formulation exacte attendue : pas « un représentant » tout court.",
+       mention:"Un représentant de son choix, ou deux témoins. La précision « de son choix » est exigée : un représentant imposé ne satisferait pas la formalité de l'article 57.",art:"Art. 57 CPP"}
+     ]},
+    {id:"CARTON II",heure:"Fouilles",titre:"Fouilles de sécurité et intégrales",nature:"Fiche de révision — les fouilles de la personne",gain:{l1:"bouclé",l2:"3 CONDITIONS",l3:"La fouille intégrale encadrée"},
+     recit:"« La fouille de la personne, ce n'est pas la perquisition. Trois conditions pour la fouille intégrale, et une exigence de dignité. »",
+     questions:[
+      {type:"multi",enonce:"Quelles sont les trois conditions nécessaires pour procéder à une fouille intégrale ?",consigne:"Trois réponses attendues",
+       options:["Les nécessités de l'enquête","Être décidée par un officier de police judiciaire","Être impossible par une palpation ou des moyens de détection électronique","Avoir l'accord écrit de la personne","Être autorisée par le juge des libertés et de la détention"],
+       bonnes:[0,1,2],indice:"La fouille intégrale est subsidiaire : on ne l'emploie que si les moyens moins intrusifs échouent.",
+       mention:"Trois conditions : les nécessités de l'enquête, une décision de l'OPJ, et l'impossibilité de procéder par palpation ou moyens de détection électronique. La fouille intégrale est une mesure de dernier recours.",art:"Mémento GAV tome II"},
+      {type:"multi",enonce:"Quelles conditions doivent être respectées pour préserver la dignité lors d'une fouille intégrale ?",consigne:"Deux réponses attendues",
+       options:["Dans un espace fermé","Par une personne de même sexe","En présence d'un magistrat","Devant témoins"],
+       bonnes:[0,1],indice:"Deux garanties : le lieu, et la personne qui procède.",
+       mention:"La fouille intégrale se déroule dans un espace fermé et par une personne de même sexe que la personne fouillée. Ces garanties protègent la dignité de l'intéressé.",art:"Art. 63-7 CPP"}
+     ]},
+    {id:"CARTON III",heure:"Actes",titre:"Scellés, enregistrements, médecin",nature:"Fiche de révision — formalités et garanties",gain:{l1:"bouclé",l2:"SCELLÉ FERMÉ",l3:"L'original protégé"},
+     recit:"« Dernier carton : les actes qui sécurisent la procédure. Scellés des enregistrements, examen médical, présence de l'avocat. »",
+     questions:[
+      {type:"qcm",enonce:"Pour des faits criminels, que fait l'enquêteur de l'enregistrement original des auditions et de sa copie ?",
+       options:["L'enregistrement original est placé sous scellé fermé ; la copie est versée au dossier","Les deux sont versés au dossier","L'original est versé au dossier ; la copie est détruite","Les deux sont conservés par l'avocat"],
+       bonne:0,indice:"L'original doit être protégé de toute altération.",
+       mention:"L'enregistrement original est placé sous scellé fermé, et la copie est versée au dossier. Ce dispositif garantit l'intégrité de l'enregistrement, exploitable en cas de contestation.",art:"Art. 64-1 CPP"},
+      {type:"multi",enonce:"L'audition en garde à vue doit-elle faire l'objet d'un enregistrement audiovisuel ?",consigne:"Deux réponses attendues",
+       options:["L'audition d'un mineur en garde à vue","L'audition d'un majeur en garde à vue pour faits criminels","L'audition d'un majeur en garde à vue pour un délit routier","L'audition d'un témoin libre"],
+       bonnes:[0,1],indice:"Le mineur toujours ; le majeur, seulement pour le crime.",
+       mention:"L'enregistrement audiovisuel est obligatoire pour l'audition d'un mineur en garde à vue, et pour celle d'un majeur en garde à vue en matière criminelle. Hors ces cas, il n'est pas requis.",art:"Art. 64-1 CPP"},
+      {type:"qcm",enonce:"L'enregistrement audiovisuel des auditions d'un majeur en garde à vue est obligatoire :",
+       options:["Pour les crimes","Pour tous les délits","Pour toute garde à vue","Jamais pour un majeur"],
+       bonne:0,indice:"Pour le majeur, un seul cas.",
+       mention:"Pour les crimes uniquement. L'audition d'un majeur gardé à vue en matière criminelle est enregistrée ; en matière délictuelle, l'enregistrement n'est pas imposé.",art:"Art. 64-1 CPP"},
+      {type:"multi",enonce:"Hormis l'OPJ et le procureur, qui peut consulter le certificat médical établi par le médecin en flagrance ?",consigne:"Deux réponses attendues",
+       options:["L'avocat","La personne gardée à vue","Le représentant légal d'un tiers","Le chef de service, systématiquement"],
+       bonnes:[0,1],indice:"Les deux personnes directement concernées par la défense.",
+       mention:"Le certificat médical peut être consulté par l'avocat et par la personne gardée à vue elle-même. Il n'a pas vocation à circuler au-delà.",art:"Mémento GAV tome II"},
+      {type:"multi",enonce:"Dans le cadre d'une garde à vue, qui peut désigner le médecin chargé de pratiquer l'examen médical ?",consigne:"Deux réponses attendues",
+       options:["L'officier de police judiciaire","Le procureur de la République","L'avocat de la personne","Le préfet"],
+       bonnes:[0,1],indice:"Les deux autorités qui pilotent la mesure.",
+       mention:"Le médecin peut être désigné par l'OPJ ou par le procureur. La personne gardée à vue peut demander à être examinée, mais ne choisit pas elle-même le médecin.",art:"Art. 63-3 CPP"},
+      {type:"multi",enonce:"Dans quels cas la présence de l'avocat est-elle obligatoire en garde à vue, hors auditions et confrontations ?",consigne:"Deux réponses attendues",
+       options:["Lors d'une opération de reconstitution de l'infraction","Lors d'une séance d'identification de suspects","Lors de la signalisation","Lors de la fouille de sécurité"],
+       bonnes:[0,1],indice:"Deux actes de confrontation à la scène ou aux suspects.",
+       mention:"La présence de l'avocat est prévue, hors auditions et confrontations, pour les opérations de reconstitution de l'infraction et les séances d'identification de suspects (tapissage). Ce sont des actes où la défense doit pouvoir veiller.",art:"Art. 63-4-2 CPP"},
+      {type:"qcm",enonce:"Vous recueillez des déclarations contradictoires au cours de l'enquête. Quel acte de procédure réalisez-vous ?",
+       options:["Une confrontation","Une nouvelle audition libre","Une reconstitution","Une expertise"],
+       bonne:0,indice:"Mettre les versions face à face.",
+       mention:"Une confrontation : elle met en présence les personnes dont les déclarations divergent, afin de faire apparaître la vérité. Elle obéit aux mêmes garanties que l'audition (droits, avocat).",art:"ME1 — art. 61 et 63-4-2 CPP"}
+     ]}
+  ],
+  synthese:{kicker:"Fiche de repères — le domicile et la perquisition",titre:"Les repères à verrouiller",
+    intro:"Reconstituez de mémoire ces repères. Tous ont été vus dans les cartons.",
+    cta:"Boucler la révision",
+    champs:[
+      {label:"Heure d'ouverture de la fenêtre de perquisition",bonne:"6",unite:"heures"},
+      {label:"Heure de fermeture de la fenêtre de perquisition",bonne:"21",unite:"heures"},
+      {label:"Article du CPP sur la perquisition préliminaire",bonne:"76",unite:"CPP"},
+      {label:"Seuil de peine pour une perquisition autorisée par le JLD",bonne:"3",unite:"ans"}
+    ]},
+  final:{okKicker:"Révision bouclée",okTitle:"Formalisme maîtrisé",okText:"Assentiment, autorisation du JLD, heures, présence, fouilles et scellés : le formalisme de la perquisition est en place.",
+    koKicker:"Révision bouclée hors délai",koTitle:"Le temps a manqué",koText:"Le fond est là, le tempo non. La rigueur formelle se travaille dans le calme.",
+    ficheTitle:"Fiche de révision — perquisitions, fouilles & scellés",replayLabel:"Refaire le carton",foot:"Recueil d'annales · procédure pénale — mission III sur V"}
+});
+</script>
+</html>

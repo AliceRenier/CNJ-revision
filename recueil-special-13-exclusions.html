@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recueil · Mission XIII — Transpositions & exclusions</title>
+<style>
+/* =====================================================================
+   MOTEUR CNJ — styles partagés
+   Utilisé par toutes les missions du recueil d'annales.
+   Thème par défaut : violet (neutre). Variante rouge via [data-theme=rouge].
+   ===================================================================== */
+:root{
+  --bureau:#3C4642; --bureau-fonce:#2E3835;
+  --pelure:#D9DFD6; --pelure-ombre:#C3CCC1;
+  --encre:#19221F; --encre-pale:#5A6863;
+  --tampon:#4A2E7A; --tampon-voile:rgba(74,46,122,.12);
+  --rouge:#9C3125; --rouge-voile:rgba(156,49,37,.09); --vert:#2F6B48;
+  --ambre:#8A5A00; --ambre-voile:rgba(138,90,0,.09);
+  --accent:var(--tampon); --accent-tag:#B9A6E0; --accent-tag-txt:#C9B8E8;
+  --mono:"Courier New",Courier,ui-monospace,monospace;
+  --etroit:"Arial Narrow","Helvetica Neue Condensed",Arial,sans-serif;
+}
+[data-theme="rouge"]{ --accent:var(--rouge); --accent-tag:#E4A79C; --accent-tag-txt:#E4A79C; }
+*{box-sizing:border-box} html,body{margin:0;padding:0}
+body{background:var(--bureau);
+  background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.06) 0 1px,transparent 1px 4px),radial-gradient(120% 80% at 50% 0%,rgba(255,255,255,.06),transparent 60%);
+  color:var(--encre);font-family:var(--mono);font-size:16px;line-height:1.55;min-height:100vh}
+header{position:sticky;top:0;z-index:30;background:var(--bureau-fonce);border-bottom:2px solid #1D2422;color:#C8D2CC;
+  padding:.5rem clamp(.7rem,3vw,1.6rem);display:flex;align-items:center;gap:clamp(.6rem,3vw,2rem);flex-wrap:wrap}
+.serv{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.68rem;line-height:1.3;opacity:.7}
+.serv b{display:block;font-weight:400;letter-spacing:.22em;opacity:.55;font-size:.6rem}
+.cadre-tag{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;border:1.5px solid var(--accent-tag);color:var(--accent-tag-txt);padding:.14rem .5rem}
+.pendule{margin-left:auto;text-align:right}
+.pendule .h{font-size:clamp(1.3rem,5vw,1.7rem);font-weight:bold;letter-spacing:.06em;color:#EDEFE9}
+.pendule .r{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.62rem;opacity:.65}
+.pendule.tendu .h{color:#E4A79C}
+.jauge{position:absolute;left:0;bottom:0;height:2px;background:var(--accent);width:0%;transition:width 1s linear}
+
+main{max-width:800px;margin:0 auto;padding:clamp(1rem,4vw,2.6rem) clamp(.7rem,4vw,1.5rem) 5rem}
+.feuille{position:relative;background:var(--pelure);background-image:linear-gradient(180deg,rgba(255,255,255,.5),transparent 18%);
+  box-shadow:0 1px 0 var(--pelure-ombre),0 14px 34px rgba(0,0,0,.34);
+  padding:clamp(1.1rem,4vw,2.2rem) clamp(1rem,4vw,2.4rem) clamp(1.4rem,4vw,2.2rem) clamp(1.9rem,6vw,3.4rem)}
+.feuille::before{content:"";position:absolute;top:0;bottom:0;left:clamp(1.1rem,3.5vw,2rem);width:1px;background:rgba(74,46,122,.35)}
+.entete{border-bottom:1px solid rgba(25,34,31,.25);padding-bottom:.8rem;margin-bottom:1.3rem}
+.tampon-cote{float:right;margin:-.3rem -.4rem .4rem 1rem;border:1.5px solid var(--accent);color:var(--accent);
+  font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.7rem;padding:.18rem .5rem;transform:rotate(1.6deg)}
+.qualif{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.2em;font-size:.66rem;color:var(--encre-pale);margin:0 0 .35rem}
+h1,h2{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.07em;font-weight:bold;margin:0;line-height:1.15}
+h1{font-size:clamp(1.35rem,5.5vw,2rem)} h2{font-size:clamp(1.05rem,4.4vw,1.35rem)}
+.recit{white-space:pre-line;margin:0 0 1.4rem;font-size:.95rem}
+.recit em{font-style:normal;background:rgba(74,46,122,.13);padding:0 .18em}
+
+.question{border-top:1px dashed rgba(25,34,31,.3);padding-top:1.2rem}
+.compteur{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;color:var(--encre-pale);margin-bottom:.5rem}
+.enonce{font-weight:bold;margin:0 0 1rem;font-size:1rem}
+.consigne{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.64rem;color:var(--accent);margin:-.6rem 0 .9rem}
+
+.opt{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:rgba(255,255,255,.42);
+  border:1px solid rgba(25,34,31,.28);padding:.65rem .8rem .65rem 2.4rem;margin-bottom:.5rem;cursor:pointer;position:relative;transition:background .12s,border-color .12s}
+.opt::before{content:"";position:absolute;left:.85rem;top:.95rem;width:.72rem;height:.72rem;border:1px solid var(--encre-pale)}
+.opt:hover{background:#fff;border-color:var(--encre)}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--tampon-voile)}
+.opt[aria-pressed="true"]::before{background:var(--accent);border-color:var(--accent)}
+.opt:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.opt.fige{pointer-events:none;opacity:.72}
+.opt.juste{border-color:var(--vert);background:rgba(47,107,72,.14)}
+.opt.juste::before{background:var(--vert);border-color:var(--vert)}
+.opt.faux{border-color:var(--rouge);background:rgba(156,49,37,.1)}
+
+.vf{display:flex;gap:.6rem;align-items:flex-start;border-bottom:1px dotted rgba(25,34,31,.28);padding:.7rem 0}
+.vf p{margin:0;flex:1;font-size:.93rem}
+.vf .paire{display:flex;gap:.3rem;flex:0 0 auto}
+.vf button{font:inherit;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.12em;font-size:.68rem;background:rgba(255,255,255,.5);border:1px solid rgba(25,34,31,.3);color:var(--encre-pale);padding:.35rem .6rem;cursor:pointer}
+.vf button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#F1EDF7}
+.vf.fige button{pointer-events:none}
+.vf .sol{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.64rem;flex:0 0 auto;padding-top:.45rem}
+.vf .sol.ok{color:var(--vert)} .vf .sol.ko{color:var(--rouge)}
+
+.grille{margin-bottom:.6rem}
+.ligne{display:flex;align-items:baseline;gap:.7rem;border-bottom:1px dotted rgba(25,34,31,.28);padding:.55rem 0;flex-wrap:wrap}
+.ligne p{margin:0;flex:1;min-width:12rem;font-size:.93rem}
+.ligne input{font:inherit;font-size:1.25rem;font-weight:bold;width:3.6rem;text-align:center;background:transparent;border:none;border-bottom:2px solid var(--encre);color:var(--encre);padding:.05rem .1rem}
+.ligne .unite{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.68rem;color:var(--encre-pale);width:4rem}
+.ligne input:disabled{color:var(--encre-pale);border-bottom-style:dotted}
+
+.saisie{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.4rem}
+input[type=text]{font:inherit;font-size:1.5rem;font-weight:bold;width:5.5rem;text-align:center;background:transparent;border:none;border-bottom:2px solid var(--encre);color:var(--encre);padding:.1rem .2rem}
+.unite{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;color:var(--encre-pale)}
+
+button.action{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-weight:bold;font-size:.78rem;background:var(--accent);color:#F1EDF7;border:none;padding:.72rem 1.5rem;cursor:pointer;margin-top:.7rem}
+button.action:hover{filter:brightness(1.15)}
+button.mineur{background:transparent;color:var(--encre-pale);border:1px solid rgba(25,34,31,.3);margin-left:.5rem}
+button.mineur:hover{background:rgba(0,0,0,.05);color:var(--encre)}
+
+.mention{margin-top:1.2rem;padding:.9rem 1rem;font-size:.9rem;border-left:3px solid var(--accent);background:rgba(255,255,255,.5)}
+.mention.rect{border-left-color:var(--rouge)}
+.mention .tit{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;color:var(--accent);margin-bottom:.35rem}
+.mention.rect .tit{color:var(--rouge)}
+.mention .art{display:inline-block;margin-top:.55rem;border:1px solid var(--accent);color:var(--accent);font-family:var(--etroit);text-transform:uppercase;letter-spacing:.12em;font-size:.64rem;padding:.12rem .45rem}
+
+.compare{margin-top:.9rem;padding:.8rem 1rem;border:1px dashed var(--ambre);background:var(--ambre-voile);font-size:.87rem}
+.compare .tit{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:var(--ambre);margin-bottom:.35rem;display:flex;align-items:center;gap:.5rem}
+.compare .tit::before{content:"⇄";font-size:.9rem}
+
+.note{margin-top:.9rem;padding:.8rem 1rem;border:1px dashed var(--encre-pale);background:rgba(255,255,255,.35);font-size:.85rem;color:var(--encre-pale)}
+.note .tit{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.6rem;margin-bottom:.3rem}
+
+.sceau{position:fixed;inset:0;display:grid;place-items:center;background:rgba(30,36,34,.72);z-index:60;padding:1rem}
+.sceau .marque{border:4px double var(--accent);color:var(--accent);background:rgba(233,236,231,.96);padding:1.3rem 1.9rem;text-align:center;transform:rotate(-7deg) scale(2.6);opacity:0;animation:frappe .5s cubic-bezier(.2,1.4,.4,1) forwards}
+.sceau .marque .l1{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.28em;font-size:.7rem}
+.sceau .marque .l2{font-size:clamp(1.5rem,6.5vw,2.4rem);font-weight:bold;letter-spacing:.04em;line-height:1.15}
+.sceau .marque .l3{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;opacity:.8;margin-top:.3rem}
+@keyframes frappe{to{transform:rotate(-7deg) scale(1);opacity:1}}
+.sceau .suite{margin-top:1.6rem;text-align:center}
+
+.bilan{display:flex;gap:1.6rem;flex-wrap:wrap;margin:1.2rem 0 1.6rem}
+.bilan div span{display:block;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:var(--encre-pale)}
+.bilan div b{font-size:1.5rem}
+ul.fiche{padding-left:1.1rem}
+.fiche li{margin-bottom:.8rem;font-size:.9rem}
+.fiche li b{display:block;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.1em;font-size:.7rem;color:var(--accent)}
+.pied{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:#9AA69F;text-align:center;margin-top:2rem}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{body{background:#fff}header,button{display:none}.feuille{box-shadow:none;background:#fff}}
+
+</style>
+</head>
+<body></body>
+<script>
+"use strict";
+/* =====================================================================
+   MOTEUR CNJ — logique partagée
+   Une mission = un objet de config passé à CNJ.run(cfg).
+   Types de question : qcm, multi, num, vf, grille. Champ optionnel
+   "compare" (encadré comparatif). Voir un fichier mission pour la forme.
+   ===================================================================== */
+window.CNJ = (function(){
+
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function recit(t){return esc(t).replace(/&lt;em&gt;/g,"<em>").replace(/&lt;\/em&gt;/g,"</em>").replace(/\n/g,"<br>");}
+function para(t){return esc(t).replace(/\n/g,"<br>");}
+function fmt(s){const m=Math.floor(Math.abs(s)/60),r=Math.abs(s)%60;return (s<0?"-":"")+String(m).padStart(2,"0")+":"+String(r).padStart(2,"0");}
+
+function run(cfg){
+  const EV = cfg.events, SYN = cfg.synthese||null;
+  const P = cfg.pendule||{};
+  const DUREE = (P.durationMin||30)*60;
+  const H_DEBUT = (P.debutMin!=null)?P.debutMin:null, H_FIN=(P.finMin!=null)?P.finMin:null;
+  const cartonWord = cfg.cartonWord||"Phase", subWord = cfg.subWord||"séquence";
+  let reste=DUREE, chrono=null, demarre=false;
+  let iEv=0,iQ=0,penalites=0,selection=[],vfSel=[],essais=0;
+  const acquis=[];
+
+  /* ------- structure de page ------- */
+  document.body.setAttribute("data-theme", cfg.theme||"violet");
+  document.body.innerHTML = `
+  <header>
+    <div class="serv"><b>${esc((cfg.serv&&cfg.serv.b)||"")}</b>${esc((cfg.serv&&cfg.serv.a)||"")}</div>
+    ${cfg.cadreTag?`<span class="cadre-tag">${esc(cfg.cadreTag)}</span>`:""}
+    <div class="pendule" id="pendule">
+      <div class="h" id="heure">${esc(P.startClock||fmt(DUREE))}</div>
+      <div class="r" id="reste">${esc(P.label||"")}</div>
+    </div>
+    <div class="jauge" id="jauge"></div>
+  </header>
+  <main id="plateau"></main>`;
+
+  const plateau=document.getElementById("plateau");
+  const elHeure=document.getElementById("heure");
+  const elReste=document.getElementById("reste");
+  const elJauge=document.getElementById("jauge");
+  const elPendule=document.getElementById("pendule");
+
+  function pendule(){
+    const ecoule=Math.min(DUREE-reste,DUREE);
+    if(H_DEBUT!=null&&H_FIN!=null){
+      const t=H_DEBUT+(ecoule/DUREE)*(H_FIN-H_DEBUT);
+      const h=Math.floor(t/60)%24,m=Math.floor(t%60);
+      elHeure.textContent=String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");
+    }else{
+      elHeure.textContent=fmt(reste);
+    }
+    elReste.textContent = reste>0 ? "Reste "+fmt(reste)+" "+(P.remainingLabel||"") : (P.overLabel||"Temps dépassé")+" — "+fmt(reste);
+    elJauge.style.width=Math.min(100,(ecoule/DUREE)*100)+"%";
+    elPendule.classList.toggle("tendu",reste<=(P.tendu||300));
+  }
+  function lancer(){ if(demarre)return; demarre=true; chrono=setInterval(()=>{reste--;pendule();},1000); }
+  function penalite(s){ reste-=s; penalites+=s; pendule(); }
+
+  /* ------- accueil ------- */
+  function accueil(){
+    const nbQ=EV.reduce((n,e)=>n+e.questions.length,0);
+    const A=cfg.accueil||{};
+    plateau.innerHTML=`
+    <div class="feuille">
+      <div class="entete">
+        <p class="qualif">${esc(A.kicker||"")}</p>
+        <h1>${esc(A.titre||"")}</h1>
+      </div>
+      <p class="recit">${recit((A.intro||"").replace("{nbQ}",nbQ))}</p>
+      <button class="action" id="go">${esc(A.cta||"Commencer")}</button>
+      ${A.foot?`<p class="pied" style="text-align:left;margin-top:1.4rem">${esc(A.foot)}</p>`:""}
+    </div>`;
+    document.getElementById("go").onclick=()=>{ lancer(); rendre(); };
+  }
+
+  /* ------- rendu d'une question ------- */
+  function rendre(){
+    const ev=EV[iEv],q=ev.questions[iQ];
+    selection=[]; vfSel=(q.type==="vf")?q.items.map(()=>null):[]; essais=0;
+
+    let champ="";
+    if(q.type==="num"){
+      champ=`<div class="saisie"><input type="text" id="saisie" inputmode="numeric" autocomplete="off" maxlength="3" aria-label="Réponse"><span class="unite">${esc(q.unite||"")}</span></div>`;
+    }else if(q.type==="grille"){
+      champ=`<div class="grille">`+q.champs.map((c,i)=>`<div class="ligne"><p>${esc(c.label)}</p><input type="text" inputmode="numeric" maxlength="3" data-i="${i}" aria-label="${esc(c.label)}"><span class="unite">${esc(c.unite)}</span></div>`).join("")+`</div>`;
+    }else if(q.type==="vf"){
+      champ=q.items.map((it,i)=>`<div class="vf" data-i="${i}"><p>${esc(it.label)}</p><span class="paire"><button type="button" data-v="1" aria-pressed="false">Vrai</button><button type="button" data-v="0" aria-pressed="false">Faux</button></span><span class="sol"></span></div>`).join("");
+    }else{
+      champ=q.options.map((o,i)=>`<button class="opt" type="button" data-i="${i}" aria-pressed="false">${esc(o)}</button>`).join("");
+    }
+
+    plateau.innerHTML=`
+    <div class="feuille">
+      <div class="entete">
+        <span class="tampon-cote">${esc(ev.id)}${ev.heure?` · ${esc(ev.heure)}`:""}</span>
+        <p class="qualif">${esc(ev.nature||"")}</p>
+        <h2>${esc(ev.titre)}</h2>
+        ${iQ===0&&ev.recit?`<p class="recit" style="margin-top:1.1rem">${recit(ev.recit)}</p>`:``}
+      </div>
+      <div class="question">
+        <p class="compteur">${esc(cartonWord)} ${iEv+1} sur ${EV.length} — ${esc(subWord)} ${iQ+1} sur ${ev.questions.length}</p>
+        <p class="enonce">${esc(q.enonce)}</p>
+        ${q.consigne?`<p class="consigne">${esc(q.consigne)}</p>`:""}
+        ${champ}
+        <button class="action" id="valider">${esc(cfg.validerLabel||"Valider")}</button>
+        <div id="retour"></div>
+      </div>
+    </div>
+    ${cfg.penaltyLabel?`<p class="pied">${esc(cfg.penaltyLabel)}</p>`:""}`;
+
+    if(q.type==="num"){
+      const s=document.getElementById("saisie"); s.focus();
+      s.addEventListener("keydown",e=>{if(e.key==="Enter")valider();});
+    }else if(q.type==="grille"){
+      const ch=[...plateau.querySelectorAll(".ligne input")];
+      ch.forEach((c,i)=>c.addEventListener("keydown",e=>{if(e.key==="Enter"){ if(ch[i+1])ch[i+1].focus(); else valider(); }}));
+      ch[0].focus();
+    }else if(q.type==="vf"){
+      plateau.querySelectorAll(".vf").forEach(ligne=>{
+        const i=+ligne.dataset.i;
+        ligne.querySelectorAll("button").forEach(b=>{ b.onclick=()=>{ ligne.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); vfSel[i]=b.dataset.v==="1"; }; });
+      });
+    }else{
+      plateau.querySelectorAll(".opt").forEach(b=>{
+        b.onclick=()=>{
+          const i=+b.dataset.i;
+          if(q.type==="multi"){ const on=b.getAttribute("aria-pressed")==="true"; b.setAttribute("aria-pressed",on?"false":"true"); selection=on?selection.filter(x=>x!==i):selection.concat(i); }
+          else{ plateau.querySelectorAll(".opt").forEach(o=>o.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); selection=[i]; }
+        };
+      });
+    }
+    document.getElementById("valider").onclick=valider;
+    window.scrollTo({top:0,behavior:"instant"});
+  }
+
+  /* ------- validation ------- */
+  function valider(){
+    const ev=EV[iEv],q=ev.questions[iQ];
+    let juste=false,vide=false;
+    if(q.type==="num"){ const v=(document.getElementById("saisie").value||"").replace(/\D/g,""); if(!v)vide=true; else juste=v===String(q.bonne); }
+    else if(q.type==="grille"){ const ch=[...plateau.querySelectorAll(".ligne input")].map(c=>c.value.replace(/\D/g,"")); if(ch.some(v=>!v))vide=true; else juste=ch.every((v,i)=>v===String(q.champs[i].bonne)); }
+    else if(q.type==="vf"){ if(vfSel.some(v=>v===null))vide=true; else juste=vfSel.every((v,i)=>v===q.items[i].bonne); }
+    else if(q.type==="multi"){ if(!selection.length)vide=true; else juste=selection.slice().sort((a,b)=>a-b).join(",")===q.bonnes.slice().sort((a,b)=>a-b).join(","); }
+    else{ if(!selection.length)vide=true; else juste=selection[0]===q.bonne; }
+
+    const retour=document.getElementById("retour");
+    if(vide){ retour.innerHTML=`<div class="mention rect"><div class="tit">Réponse incomplète</div>Répondez à tous les points avant de valider.</div>`; return; }
+    essais++;
+    if(juste){ resoudre(true); return; }
+    penalite(60);
+    if(essais===1){ retour.innerHTML=`<div class="mention rect"><div class="tit">À revoir — une minute perdue</div>${esc(q.indice||"Reprenez la question.")}<br><br>Reprenez la réponse.</div>`; }
+    else{ resoudre(false); }
+  }
+
+  /* ------- correction ------- */
+  function resoudre(juste){
+    const ev=EV[iEv],q=ev.questions[iQ];
+    plateau.querySelectorAll(".opt").forEach(b=>{
+      const i=+b.dataset.i; b.classList.add("fige");
+      const ok=q.type==="multi"?q.bonnes.includes(i):i===q.bonne;
+      if(ok)b.classList.add("juste"); else if(b.getAttribute("aria-pressed")==="true")b.classList.add("faux");
+    });
+    plateau.querySelectorAll(".vf").forEach(ligne=>{
+      const i=+ligne.dataset.i; ligne.classList.add("fige");
+      const bon=q.items[i].bonne,don=vfSel[i],sol=ligne.querySelector(".sol");
+      sol.textContent=bon?"Vrai":"Faux"; sol.className="sol "+(don===bon?"ok":"ko");
+    });
+    const s=document.getElementById("saisie"); if(s){ s.disabled=true; if(!juste)s.value=q.bonne; }
+    plateau.querySelectorAll(".ligne input").forEach((c,i)=>{ c.disabled=true; if(!juste)c.value=q.champs[i].bonne; });
+
+    document.getElementById("valider").remove();
+    acquis.push({art:q.art||"",texte:q.mention||"",compare:q.compare||null,ev:ev.id,ok:juste});
+
+    const cmp=q.compare?`<div class="compare"><div class="tit">${esc(cfg.compareLabel||"Pour comparer")}</div>${para(q.compare)}</div>`:"";
+    const last=iQ+1>=ev.questions.length;
+    document.getElementById("retour").innerHTML=`
+      <div class="mention">
+        <div class="tit">${juste?(cfg.okTag||"Validé"):(cfg.koTag||"Correction")}</div>
+        ${para(q.mention||"")}
+        ${q.art?`<div class="art">${esc(q.art)}</div>`:""}
+      </div>
+      ${cmp}
+      <button class="action" id="suite">${last?(cfg.closeCartonLabel||"Suivant"):(cfg.nextLabel||"Suivant")}</button>`;
+    document.getElementById("suite").onclick=()=>{ if(!last){ iQ++; rendre(); } else sceau(ev); };
+    document.getElementById("suite").scrollIntoView({block:"nearest"});
+  }
+
+  /* ------- sceau de fin d'événement ------- */
+  function sceau(ev){
+    const d=document.createElement("div"); d.className="sceau";
+    const g=ev.gain||{};
+    const last=iEv+1>=EV.length;
+    d.innerHTML=`<div>
+      <div class="marque"><div class="l1">${esc(ev.id)}${g.l1?` — ${esc(g.l1)}`:""}</div><div class="l2">${esc(g.l2||"")}</div><div class="l3">${esc(g.l3||"")}</div></div>
+      <div class="suite"><button class="action" id="continuer">${last?(cfg.toFinalLabel||"Terminer"):(cfg.nextCartonLabel||"Suivant")}</button></div>
+    </div>`;
+    document.body.appendChild(d);
+    const b=d.querySelector("#continuer"); b.focus();
+    b.onclick=()=>{ d.remove(); if(!last){ iEv++; iQ=0; rendre(); } else (SYN?finale():bilan()); };
+  }
+
+  /* ------- verrou final (grille de synthèse) ------- */
+  function finale(){
+    plateau.innerHTML=`
+    <div class="feuille">
+      <div class="entete">
+        <span class="tampon-cote">${esc((cfg.final&&cfg.final.tampon)||"Synthèse")}</span>
+        <p class="qualif">${esc(SYN.kicker||"")}</p>
+        <h2>${esc(SYN.titre||"Synthèse")}</h2>
+      </div>
+      <p class="recit">${recit(SYN.intro||"")}</p>
+      <div class="grille" id="syn">
+        ${SYN.champs.map((c,i)=>`<div class="ligne"><p>${esc(c.label)}</p><input type="text" inputmode="numeric" maxlength="3" data-i="${i}" aria-label="${esc(c.label)}"><span class="unite">${esc(c.unite)}</span></div>`).join("")}
+      </div>
+      <button class="action" id="remettre">${esc(SYN.cta||"Valider")}</button>
+      <div id="retour"></div>
+    </div>`;
+    const ch=[...plateau.querySelectorAll("#syn input")];
+    ch.forEach((c,i)=>c.addEventListener("keydown",e=>{if(e.key==="Enter"){ if(ch[i+1])ch[i+1].focus(); else document.getElementById("remettre").click(); }}));
+    ch[0].focus();
+    document.getElementById("remettre").onclick=()=>{
+      const v=ch.map(c=>c.value.replace(/\D/g,""));
+      if(v.some(x=>!x)){ document.getElementById("retour").innerHTML=`<div class="mention rect"><div class="tit">Fiche incomplète</div>${SYN.champs.length} repères sont attendus.</div>`; return; }
+      const faux=v.map((x,i)=>x===String(SYN.champs[i].bonne)?null:i).filter(x=>x!==null);
+      if(!faux.length){ clearInterval(chrono); bilan(); }
+      else{ penalite(60); document.getElementById("retour").innerHTML=`<div class="mention rect"><div class="tit">À revoir — une minute perdue</div>${faux.length} repère${faux.length>1?"s":""} à corriger. Tous ont été vus dans la mission.</div>`; }
+    };
+    window.scrollTo({top:0,behavior:"instant"});
+  }
+
+  /* ------- bilan + fiche imprimable ------- */
+  function bilan(){
+    clearInterval(chrono);
+    const total=acquis.length,justes=acquis.filter(a=>a.ok).length,utilise=DUREE-reste,retard=reste<0;
+    const F=cfg.final||{};
+    plateau.innerHTML=`
+    <div class="feuille">
+      <div class="entete">
+        <span class="tampon-cote">Clôture</span>
+        <p class="qualif">${esc(retard?(F.koKicker||"Terminé hors délai"):(F.okKicker||"Terminé"))}</p>
+        <h1>${esc(retard?(F.koTitle||"Le temps a manqué"):(F.okTitle||"Mission bouclée"))}</h1>
+      </div>
+      <p class="recit">${recit(retard?(F.koText||""):(F.okText||""))}</p>
+      <div class="bilan">
+        <div><span>${esc(cfg.subWordPlural||"Questions traitées")}</span><b>${total}</b></div>
+        <div><span>Justes du premier coup</span><b>${justes}/${total}</b></div>
+        <div><span>Temps utilisé</span><b>${fmt(utilise)}</b></div>
+        <div><span>Minutes perdues</span><b>${Math.round(penalites/60)}</b></div>
+      </div>
+      <h2 style="margin-bottom:.8rem">${esc(F.ficheTitle||"Fiche de révision")}</h2>
+      <ul class="fiche">
+        ${acquis.map(a=>`<li><b>${esc(a.art)} — ${esc(a.ev)}${a.ok?"":" · reprise"}</b>${para(a.texte)}${a.compare?`<br><br><span style="color:var(--ambre)">⇄</span> ${para(a.compare)}`:""}</li>`).join("")}
+      </ul>
+      <button class="action" id="imprimer">Imprimer la fiche</button>
+      <button class="action mineur" id="rejouer">${esc(F.replayLabel||"Recommencer")}</button>
+    </div>
+    ${F.foot?`<p class="pied">${esc(F.foot)}</p>`:""}`;
+    document.getElementById("imprimer").onclick=()=>window.print();
+    document.getElementById("rejouer").onclick=()=>{ reste=DUREE; demarre=false; iEv=0; iQ=0; penalites=0; acquis.length=0; pendule(); accueil(); };
+    window.scrollTo({top:0,behavior:"instant"});
+  }
+
+  pendule(); accueil();
+}
+
+return { run };
+})();
+
+</script>
+<script>
+CNJ.run({
+  theme:"violet",
+  serv:{a:"Recueil d'annales · Mission spéciale · Transpositions", b:"École nationale de police — salle de révision"},
+  cadreTag:"Mission spéciale",
+  pendule:{startClock:"20:00",label:"Épreuve blanche à 21:00",remainingLabel:"de révision",overLabel:"L'épreuve commence",durationMin:20,debutMin:1200,finMin:1260,tendu:240},
+  cartonWord:"Carton", subWord:"fiche", subWordPlural:"Fiches traitées",
+  validerLabel:"Valider la fiche", nextLabel:"Fiche suivante", closeCartonLabel:"Carton suivant",
+  nextCartonLabel:"Carton suivant", toFinalLabel:"Bilan", penaltyLabel:"Une erreur = une minute de révision",
+  okTag:"Fiche acquise", koTag:"Correction",
+  accueil:{
+    kicker:"Recueil d'annales — mission spéciale",
+    titre:"Transpositions & exclusions",
+    intro:"Cette mission regroupe les questions du recueil dont le fait support relevait d'une infraction routière ou sexuelle. Le point de droit testé est conservé à l'identique ; seul le contexte a été remplacé par une infraction de gravité et de régime équivalents, ce qui est signalé à chaque fois.\n\n{nbQ} fiches jouables, plus une note finale sur les rares questions écartées sans transposition possible — à réviser via ton cours.\n\nLe droit et les réponses sont exactement ceux du corrigé : seule la mise en situation change.",
+    cta:"Commencer",
+    foot:"Mission spéciale — durée estimée 20 minutes — jeu solo, hors connexion"
+  },
+  events:[
+    {id:"CARTON I",heure:"Procédure",titre:"Une strangulation en garde à vue",nature:"Fiche de révision — transposition d'un crime contre les personnes",gain:{l1:"bouclé",l2:"48 HEURES",l3:"Le régime du crime, inchangé"},
+     recit:"Le fait support de ces questions du recueil était un viol aggravé. Il a été remplacé par une tentative de meurtre par strangulation : même nature criminelle, même régime de garde à vue et de scellé. Le raisonnement à réviser est rigoureusement identique.",
+     questions:[
+      {type:"num",unite:"heures",enonce:"Un individu a tenté de tuer sa victime par strangulation. Interpellé et placé en garde à vue, quelle est la durée maximale de la mesure ?",
+       bonne:"48",indice:"Un crime de droit commun : 24 heures, plus une prolongation.",
+       mention:"Quarante-huit heures : 24 heures, prolongées de 24 heures par le procureur. C'est le régime de droit commun de la garde à vue, applicable à ce crime. Les 96 heures restent réservées à la criminalité organisée et au terrorisme. [Fait support transposé : le corrigé portait sur un viol aggravé ; régime identique.]",art:"Art. 63 CPP"},
+      {type:"qcm",enonce:"La cordelette ayant servi à la strangulation est découverte sur les lieux. Qu'en faites-vous ?",
+       options:["Elle est saisie, inventoriée et placée sous scellé","Elle est photographiée puis laissée sur place","Elle est remise à la victime","Elle est détruite après constatation"],
+       bonne:0,indice:"L'instrument du crime est une pièce à conviction.",
+       mention:"La cordelette, instrument de l'infraction, est saisie, inventoriée et placée sous scellé : c'est une pièce à conviction essentielle à la manifestation de la vérité. [Fait support transposé depuis le corrigé, régime de saisie inchangé.]",art:"Art. 54 et 56 CPP"},
+      {type:"vf",enonce:"Sur cette garde à vue criminelle, vrai ou faux ?",consigne:"Vrai ou faux pour chaque ligne",
+       items:[
+        {label:"La prolongation de la garde à vue est décidée par le procureur de la République",bonne:true},
+        {label:"L'audition du gardé à vue doit faire l'objet d'un enregistrement audiovisuel",bonne:true},
+        {label:"La garde à vue pour ce crime peut d'emblée durer 96 heures",bonne:false}
+       ],
+       indice:"Un crime de droit commun n'ouvre pas les 96 heures ; celles-ci tiennent au type d'infraction, pas à sa gravité.",
+       mention:"La prolongation relève du procureur : vrai. L'enregistrement audiovisuel est obligatoire pour l'audition d'un majeur gardé à vue en matière criminelle : vrai. Les 96 heures sont réservées à la criminalité organisée et au terrorisme, pas à tout crime : faux.",art:"Art. 63 et 64-1 CPP"}
+     ]},
+    {id:"CARTON II",heure:"Droit pénal",titre:"Tentative et corruption",nature:"Fiche de révision — transpositions de droit pénal",gain:{l1:"bouclé",l2:"TENTATIVE",l3:"Le crime tenté puni comme le crime"},
+     recit:"Deux points de droit pénal dont le contexte a été neutralisé : la répression de la tentative (dont l'exemple d'origine était une tentative de viol, remplacée par une tentative de meurtre) et la corruption passive d'un agent (dont le contexte routier a été retiré).",
+     questions:[
+      {type:"multi",enonce:"Parmi ces situations, lesquelles constituent une tentative punissable ?",consigne:"Deux réponses attendues",
+       options:["La tentative de meurtre","La tentative d'escroquerie","La simple intention non extériorisée de commettre un vol","Le repentir actif avant tout commencement d'exécution"],
+       bonnes:[0,1],indice:"La tentative de crime est toujours punissable ; celle du délit, seulement quand la loi le prévoit.",
+       mention:"La tentative de meurtre (crime) est toujours punissable ; la tentative d'escroquerie l'est car la loi le prévoit expressément. La simple intention non extériorisée et le désistement volontaire avant exécution ne sont pas punissables. [L'exemple du corrigé — tentative de viol — a été remplacé par la tentative de meurtre : la règle testée, la répression de la tentative de crime, est identique.]",art:"Art. 121-4 et 121-5 CP"},
+      {type:"qcm",enonce:"Un agent public sollicite une somme d'argent en échange de l'accomplissement ou de l'abstention d'un acte de sa fonction. Quelle infraction commet-il ?",
+       options:["La corruption passive","La concussion","Le trafic d'influence","L'abus de confiance"],
+       bonne:0,indice:"C'est l'agent qui se laisse corrompre : la corruption vue du côté de celui qui reçoit.",
+       mention:"La corruption passive : le fait pour une personne dépositaire de l'autorité publique de solliciter ou d'agréer, sans droit, des offres ou avantages pour accomplir ou s'abstenir d'un acte de sa fonction. [Contexte routier du corrigé neutralisé ; l'infraction testée est inchangée.]",art:"Art. 432-11 CP"}
+     ]}
+  ],
+  synthese:null,
+  final:{okKicker:"Révision bouclée",okTitle:"Transpositions maîtrisées",
+    okText:"Les points de droit sensibles sont révisés sur un contexte neutre. À noter, pour être complète : deux questions du recueil portant sur les infractions de prostitution et de proxénétisme (Thème 2) n'ont pas été intégrées au jeu — elles relèvent de la sphère sexuelle, écartée du support. Révise-les directement dans ton cours et le corrigé officiel, le point de droit y étant énoncé sans mise en situation.",
+    koKicker:"Révision bouclée hors délai",koTitle:"Le temps a manqué",
+    koText:"Le fond est là, le tempo non. À noter : deux questions du recueil (prostitution / proxénétisme, Thème 2) n'ont pas été intégrées au jeu et sont à réviser via ton cours.",
+    ficheTitle:"Fiche de révision — transpositions",replayLabel:"Recommencer",foot:"Recueil d'annales · mission spéciale — transpositions & exclusions"}
+});
+</script>
+</html>

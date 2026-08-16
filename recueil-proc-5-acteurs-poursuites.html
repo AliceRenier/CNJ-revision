@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recueil · Procédure pénale V — Acteurs judiciaires, poursuites & mineurs</title>
+<style>
+/* =====================================================================
+   MOTEUR CNJ — styles partagés
+   Utilisé par toutes les missions du recueil d'annales.
+   Thème par défaut : violet (neutre). Variante rouge via [data-theme=rouge].
+   ===================================================================== */
+:root{
+  --bureau:#3C4642; --bureau-fonce:#2E3835;
+  --pelure:#D9DFD6; --pelure-ombre:#C3CCC1;
+  --encre:#19221F; --encre-pale:#5A6863;
+  --tampon:#4A2E7A; --tampon-voile:rgba(74,46,122,.12);
+  --rouge:#9C3125; --rouge-voile:rgba(156,49,37,.09); --vert:#2F6B48;
+  --ambre:#8A5A00; --ambre-voile:rgba(138,90,0,.09);
+  --accent:var(--tampon); --accent-tag:#B9A6E0; --accent-tag-txt:#C9B8E8;
+  --mono:"Courier New",Courier,ui-monospace,monospace;
+  --etroit:"Arial Narrow","Helvetica Neue Condensed",Arial,sans-serif;
+}
+[data-theme="rouge"]{ --accent:var(--rouge); --accent-tag:#E4A79C; --accent-tag-txt:#E4A79C; }
+*{box-sizing:border-box} html,body{margin:0;padding:0}
+body{background:var(--bureau);
+  background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.06) 0 1px,transparent 1px 4px),radial-gradient(120% 80% at 50% 0%,rgba(255,255,255,.06),transparent 60%);
+  color:var(--encre);font-family:var(--mono);font-size:16px;line-height:1.55;min-height:100vh}
+header{position:sticky;top:0;z-index:30;background:var(--bureau-fonce);border-bottom:2px solid #1D2422;color:#C8D2CC;
+  padding:.5rem clamp(.7rem,3vw,1.6rem);display:flex;align-items:center;gap:clamp(.6rem,3vw,2rem);flex-wrap:wrap}
+.serv{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.68rem;line-height:1.3;opacity:.7}
+.serv b{display:block;font-weight:400;letter-spacing:.22em;opacity:.55;font-size:.6rem}
+.cadre-tag{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;border:1.5px solid var(--accent-tag);color:var(--accent-tag-txt);padding:.14rem .5rem}
+.pendule{margin-left:auto;text-align:right}
+.pendule .h{font-size:clamp(1.3rem,5vw,1.7rem);font-weight:bold;letter-spacing:.06em;color:#EDEFE9}
+.pendule .r{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.62rem;opacity:.65}
+.pendule.tendu .h{color:#E4A79C}
+.jauge{position:absolute;left:0;bottom:0;height:2px;background:var(--accent);width:0%;transition:width 1s linear}
+
+main{max-width:800px;margin:0 auto;padding:clamp(1rem,4vw,2.6rem) clamp(.7rem,4vw,1.5rem) 5rem}
+.feuille{position:relative;background:var(--pelure);background-image:linear-gradient(180deg,rgba(255,255,255,.5),transparent 18%);
+  box-shadow:0 1px 0 var(--pelure-ombre),0 14px 34px rgba(0,0,0,.34);
+  padding:clamp(1.1rem,4vw,2.2rem) clamp(1rem,4vw,2.4rem) clamp(1.4rem,4vw,2.2rem) clamp(1.9rem,6vw,3.4rem)}
+.feuille::before{content:"";position:absolute;top:0;bottom:0;left:clamp(1.1rem,3.5vw,2rem);width:1px;background:rgba(74,46,122,.35)}
+.entete{border-bottom:1px solid rgba(25,34,31,.25);padding-bottom:.8rem;margin-bottom:1.3rem}
+.tampon-cote{float:right;margin:-.3rem -.4rem .4rem 1rem;border:1.5px solid var(--accent);color:var(--accent);
+  font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.7rem;padding:.18rem .5rem;transform:rotate(1.6deg)}
+.qualif{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.2em;font-size:.66rem;color:var(--encre-pale);margin:0 0 .35rem}
+h1,h2{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.07em;font-weight:bold;margin:0;line-height:1.15}
+h1{font-size:clamp(1.35rem,5.5vw,2rem)} h2{font-size:clamp(1.05rem,4.4vw,1.35rem)}
+.recit{white-space:pre-line;margin:0 0 1.4rem;font-size:.95rem}
+.recit em{font-style:normal;background:rgba(74,46,122,.13);padding:0 .18em}
+
+.question{border-top:1px dashed rgba(25,34,31,.3);padding-top:1.2rem}
+.compteur{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;color:var(--encre-pale);margin-bottom:.5rem}
+.enonce{font-weight:bold;margin:0 0 1rem;font-size:1rem}
+.consigne{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.64rem;color:var(--accent);margin:-.6rem 0 .9rem}
+
+.opt{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:rgba(255,255,255,.42);
+  border:1px solid rgba(25,34,31,.28);padding:.65rem .8rem .65rem 2.4rem;margin-bottom:.5rem;cursor:pointer;position:relative;transition:background .12s,border-color .12s}
+.opt::before{content:"";position:absolute;left:.85rem;top:.95rem;width:.72rem;height:.72rem;border:1px solid var(--encre-pale)}
+.opt:hover{background:#fff;border-color:var(--encre)}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--tampon-voile)}
+.opt[aria-pressed="true"]::before{background:var(--accent);border-color:var(--accent)}
+.opt:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.opt.fige{pointer-events:none;opacity:.72}
+.opt.juste{border-color:var(--vert);background:rgba(47,107,72,.14)}
+.opt.juste::before{background:var(--vert);border-color:var(--vert)}
+.opt.faux{border-color:var(--rouge);background:rgba(156,49,37,.1)}
+
+.vf{display:flex;gap:.6rem;align-items:flex-start;border-bottom:1px dotted rgba(25,34,31,.28);padding:.7rem 0}
+.vf p{margin:0;flex:1;font-size:.93rem}
+.vf .paire{display:flex;gap:.3rem;flex:0 0 auto}
+.vf button{font:inherit;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.12em;font-size:.68rem;background:rgba(255,255,255,.5);border:1px solid rgba(25,34,31,.3);color:var(--encre-pale);padding:.35rem .6rem;cursor:pointer}
+.vf button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#F1EDF7}
+.vf.fige button{pointer-events:none}
+.vf .sol{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.64rem;flex:0 0 auto;padding-top:.45rem}
+.vf .sol.ok{color:var(--vert)} .vf .sol.ko{color:var(--rouge)}
+
+.grille{margin-bottom:.6rem}
+.ligne{display:flex;align-items:baseline;gap:.7rem;border-bottom:1px dotted rgba(25,34,31,.28);padding:.55rem 0;flex-wrap:wrap}
+.ligne p{margin:0;flex:1;min-width:12rem;font-size:.93rem}
+.ligne input{font:inherit;font-size:1.25rem;font-weight:bold;width:3.6rem;text-align:center;background:transparent;border:none;border-bottom:2px solid var(--encre);color:var(--encre);padding:.05rem .1rem}
+.ligne .unite{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.68rem;color:var(--encre-pale);width:4rem}
+.ligne input:disabled{color:var(--encre-pale);border-bottom-style:dotted}
+
+.saisie{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.4rem}
+input[type=text]{font:inherit;font-size:1.5rem;font-weight:bold;width:5.5rem;text-align:center;background:transparent;border:none;border-bottom:2px solid var(--encre);color:var(--encre);padding:.1rem .2rem}
+.unite{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;color:var(--encre-pale)}
+
+button.action{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-weight:bold;font-size:.78rem;background:var(--accent);color:#F1EDF7;border:none;padding:.72rem 1.5rem;cursor:pointer;margin-top:.7rem}
+button.action:hover{filter:brightness(1.15)}
+button.mineur{background:transparent;color:var(--encre-pale);border:1px solid rgba(25,34,31,.3);margin-left:.5rem}
+button.mineur:hover{background:rgba(0,0,0,.05);color:var(--encre)}
+
+.mention{margin-top:1.2rem;padding:.9rem 1rem;font-size:.9rem;border-left:3px solid var(--accent);background:rgba(255,255,255,.5)}
+.mention.rect{border-left-color:var(--rouge)}
+.mention .tit{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;color:var(--accent);margin-bottom:.35rem}
+.mention.rect .tit{color:var(--rouge)}
+.mention .art{display:inline-block;margin-top:.55rem;border:1px solid var(--accent);color:var(--accent);font-family:var(--etroit);text-transform:uppercase;letter-spacing:.12em;font-size:.64rem;padding:.12rem .45rem}
+
+.compare{margin-top:.9rem;padding:.8rem 1rem;border:1px dashed var(--ambre);background:var(--ambre-voile);font-size:.87rem}
+.compare .tit{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:var(--ambre);margin-bottom:.35rem;display:flex;align-items:center;gap:.5rem}
+.compare .tit::before{content:"⇄";font-size:.9rem}
+
+.note{margin-top:.9rem;padding:.8rem 1rem;border:1px dashed var(--encre-pale);background:rgba(255,255,255,.35);font-size:.85rem;color:var(--encre-pale)}
+.note .tit{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.6rem;margin-bottom:.3rem}
+
+.sceau{position:fixed;inset:0;display:grid;place-items:center;background:rgba(30,36,34,.72);z-index:60;padding:1rem}
+.sceau .marque{border:4px double var(--accent);color:var(--accent);background:rgba(233,236,231,.96);padding:1.3rem 1.9rem;text-align:center;transform:rotate(-7deg) scale(2.6);opacity:0;animation:frappe .5s cubic-bezier(.2,1.4,.4,1) forwards}
+.sceau .marque .l1{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.28em;font-size:.7rem}
+.sceau .marque .l2{font-size:clamp(1.5rem,6.5vw,2.4rem);font-weight:bold;letter-spacing:.04em;line-height:1.15}
+.sceau .marque .l3{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;opacity:.8;margin-top:.3rem}
+@keyframes frappe{to{transform:rotate(-7deg) scale(1);opacity:1}}
+.sceau .suite{margin-top:1.6rem;text-align:center}
+
+.bilan{display:flex;gap:1.6rem;flex-wrap:wrap;margin:1.2rem 0 1.6rem}
+.bilan div span{display:block;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:var(--encre-pale)}
+.bilan div b{font-size:1.5rem}
+ul.fiche{padding-left:1.1rem}
+.fiche li{margin-bottom:.8rem;font-size:.9rem}
+.fiche li b{display:block;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.1em;font-size:.7rem;color:var(--accent)}
+.pied{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:#9AA69F;text-align:center;margin-top:2rem}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{body{background:#fff}header,button{display:none}.feuille{box-shadow:none;background:#fff}}
+
+</style>
+</head>
+<body></body>
+<script>
+"use strict";
+/* =====================================================================
+   MOTEUR CNJ — logique partagée
+   Une mission = un objet de config passé à CNJ.run(cfg).
+   Types de question : qcm, multi, num, vf, grille. Champ optionnel
+   "compare" (encadré comparatif). Voir un fichier mission pour la forme.
+   ===================================================================== */
+window.CNJ = (function(){
+
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function recit(t){return esc(t).replace(/&lt;em&gt;/g,"<em>").replace(/&lt;\/em&gt;/g,"</em>").replace(/\n/g,"<br>");}
+function para(t){return esc(t).replace(/\n/g,"<br>");}
+function fmt(s){const m=Math.floor(Math.abs(s)/60),r=Math.abs(s)%60;return (s<0?"-":"")+String(m).padStart(2,"0")+":"+String(r).padStart(2,"0");}
+
+function run(cfg){
+  const EV = cfg.events, SYN = cfg.synthese||null;
+  const P = cfg.pendule||{};
+  const DUREE = (P.durationMin||30)*60;
+  const H_DEBUT = (P.debutMin!=null)?P.debutMin:null, H_FIN=(P.finMin!=null)?P.finMin:null;
+  const cartonWord = cfg.cartonWord||"Phase", subWord = cfg.subWord||"séquence";
+  let reste=DUREE, chrono=null, demarre=false;
+  let iEv=0,iQ=0,penalites=0,selection=[],vfSel=[],essais=0;
+  const acquis=[];
+
+  /* ------- structure de page ------- */
+  document.body.setAttribute("data-theme", cfg.theme||"violet");
+  document.body.innerHTML = `
+  <header>
+    <div class="serv"><b>${esc((cfg.serv&&cfg.serv.b)||"")}</b>${esc((cfg.serv&&cfg.serv.a)||"")}</div>
+    ${cfg.cadreTag?`<span class="cadre-tag">${esc(cfg.cadreTag)}</span>`:""}
+    <div class="pendule" id="pendule">
+      <div class="h" id="heure">${esc(P.startClock||fmt(DUREE))}</div>
+      <div class="r" id="reste">${esc(P.label||"")}</div>
+    </div>
+    <div class="jauge" id="jauge"></div>
+  </header>
+  <main id="plateau"></main>`;
+
+  const plateau=document.getElementById("plateau");
+  const elHeure=document.getElementById("heure");
+  const elReste=document.getElementById("reste");
+  const elJauge=document.getElementById("jauge");
+  const elPendule=document.getElementById("pendule");
+
+  function pendule(){
+    const ecoule=Math.min(DUREE-reste,DUREE);
+    if(H_DEBUT!=null&&H_FIN!=null){
+      const t=H_DEBUT+(ecoule/DUREE)*(H_FIN-H_DEBUT);
+      const h=Math.floor(t/60)%24,m=Math.floor(t%60);
+      elHeure.textContent=String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");
+    }else{
+      elHeure.textContent=fmt(reste);
+    }
+    elReste.textContent = reste>0 ? "Reste "+fmt(reste)+" "+(P.remainingLabel||"") : (P.overLabel||"Temps dépassé")+" — "+fmt(reste);
+    elJauge.style.width=Math.min(100,(ecoule/DUREE)*100)+"%";
+    elPendule.classList.toggle("tendu",reste<=(P.tendu||300));
+  }
+  function lancer(){ if(demarre)return; demarre=true; chrono=setInterval(()=>{reste--;pendule();},1000); }
+  function penalite(s){ reste-=s; penalites+=s; pendule(); }
+
+  /* ------- accueil ------- */
+  function accueil(){
+    const nbQ=EV.reduce((n,e)=>n+e.questions.length,0);
+    const A=cfg.accueil||{};
+    plateau.innerHTML=`
+    <div class="feuille">
+      <div class="entete">
+        <p class="qualif">${esc(A.kicker||"")}</p>
+        <h1>${esc(A.titre||"")}</h1>
+      </div>
+      <p class="recit">${recit((A.intro||"").replace("{nbQ}",nbQ))}</p>
+      <button class="action" id="go">${esc(A.cta||"Commencer")}</button>
+      ${A.foot?`<p class="pied" style="text-align:left;margin-top:1.4rem">${esc(A.foot)}</p>`:""}
+    </div>`;
+    document.getElementById("go").onclick=()=>{ lancer(); rendre(); };
+  }
+
+  /* ------- rendu d'une question ------- */
+  function rendre(){
+    const ev=EV[iEv],q=ev.questions[iQ];
+    selection=[]; vfSel=(q.type==="vf")?q.items.map(()=>null):[]; essais=0;
+
+    let champ="";
+    if(q.type==="num"){
+      champ=`<div class="saisie"><input type="text" id="saisie" inputmode="numeric" autocomplete="off" maxlength="3" aria-label="Réponse"><span class="unite">${esc(q.unite||"")}</span></div>`;
+    }else if(q.type==="grille"){
+      champ=`<div class="grille">`+q.champs.map((c,i)=>`<div class="ligne"><p>${esc(c.label)}</p><input type="text" inputmode="numeric" maxlength="3" data-i="${i}" aria-label="${esc(c.label)}"><span class="unite">${esc(c.unite)}</span></div>`).join("")+`</div>`;
+    }else if(q.type==="vf"){
+      champ=q.items.map((it,i)=>`<div class="vf" data-i="${i}"><p>${esc(it.label)}</p><span class="paire"><button type="button" data-v="1" aria-pressed="false">Vrai</button><button type="button" data-v="0" aria-pressed="false">Faux</button></span><span class="sol"></span></div>`).join("");
+    }else{
+      champ=q.options.map((o,i)=>`<button class="opt" type="button" data-i="${i}" aria-pressed="false">${esc(o)}</button>`).join("");
+    }
+
+    plateau.innerHTML=`
+    <div class="feuille">
+      <div class="entete">
+        <span class="tampon-cote">${esc(ev.id)}${ev.heure?` · ${esc(ev.heure)}`:""}</span>
+        <p class="qualif">${esc(ev.nature||"")}</p>
+        <h2>${esc(ev.titre)}</h2>
+        ${iQ===0&&ev.recit?`<p class="recit" style="margin-top:1.1rem">${recit(ev.recit)}</p>`:``}
+      </div>
+      <div class="question">
+        <p class="compteur">${esc(cartonWord)} ${iEv+1} sur ${EV.length} — ${esc(subWord)} ${iQ+1} sur ${ev.questions.length}</p>
+        <p class="enonce">${esc(q.enonce)}</p>
+        ${q.consigne?`<p class="consigne">${esc(q.consigne)}</p>`:""}
+        ${champ}
+        <button class="action" id="valider">${esc(cfg.validerLabel||"Valider")}</button>
+        <div id="retour"></div>
+      </div>
+    </div>
+    ${cfg.penaltyLabel?`<p class="pied">${esc(cfg.penaltyLabel)}</p>`:""}`;
+
+    if(q.type==="num"){
+      const s=document.getElementById("saisie"); s.focus();
+      s.addEventListener("keydown",e=>{if(e.key==="Enter")valider();});
+    }else if(q.type==="grille"){
+      const ch=[...plateau.querySelectorAll(".ligne input")];
+      ch.forEach((c,i)=>c.addEventListener("keydown",e=>{if(e.key==="Enter"){ if(ch[i+1])ch[i+1].focus(); else valider(); }}));
+      ch[0].focus();
+    }else if(q.type==="vf"){
+      plateau.querySelectorAll(".vf").forEach(ligne=>{
+        const i=+ligne.dataset.i;
+        ligne.querySelectorAll("button").forEach(b=>{ b.onclick=()=>{ ligne.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); vfSel[i]=b.dataset.v==="1"; }; });
+      });
+    }else{
+      plateau.querySelectorAll(".opt").forEach(b=>{
+        b.onclick=()=>{
+          const i=+b.dataset.i;
+          if(q.type==="multi"){ const on=b.getAttribute("aria-pressed")==="true"; b.setAttribute("aria-pressed",on?"false":"true"); selection=on?selection.filter(x=>x!==i):selection.concat(i); }
+          else{ plateau.querySelectorAll(".opt").forEach(o=>o.setAttribute("aria-pressed","false")); b.setAttribute("aria-pressed","true"); selection=[i]; }
+        };
+      });
+    }
+    document.getElementById("valider").onclick=valider;
+    window.scrollTo({top:0,behavior:"instant"});
+  }
+
+  /* ------- validation ------- */
+  function valider(){
+    const ev=EV[iEv],q=ev.questions[iQ];
+    let juste=false,vide=false;
+    if(q.type==="num"){ const v=(document.getElementById("saisie").value||"").replace(/\D/g,""); if(!v)vide=true; else juste=v===String(q.bonne); }
+    else if(q.type==="grille"){ const ch=[...plateau.querySelectorAll(".ligne input")].map(c=>c.value.replace(/\D/g,"")); if(ch.some(v=>!v))vide=true; else juste=ch.every((v,i)=>v===String(q.champs[i].bonne)); }
+    else if(q.type==="vf"){ if(vfSel.some(v=>v===null))vide=true; else juste=vfSel.every((v,i)=>v===q.items[i].bonne); }
+    else if(q.type==="multi"){ if(!selection.length)vide=true; else juste=selection.slice().sort((a,b)=>a-b).join(",")===q.bonnes.slice().sort((a,b)=>a-b).join(","); }
+    else{ if(!selection.length)vide=true; else juste=selection[0]===q.bonne; }
+
+    const retour=document.getElementById("retour");
+    if(vide){ retour.innerHTML=`<div class="mention rect"><div class="tit">Réponse incomplète</div>Répondez à tous les points avant de valider.</div>`; return; }
+    essais++;
+    if(juste){ resoudre(true); return; }
+    penalite(60);
+    if(essais===1){ retour.innerHTML=`<div class="mention rect"><div class="tit">À revoir — une minute perdue</div>${esc(q.indice||"Reprenez la question.")}<br><br>Reprenez la réponse.</div>`; }
+    else{ resoudre(false); }
+  }
+
+  /* ------- correction ------- */
+  function resoudre(juste){
+    const ev=EV[iEv],q=ev.questions[iQ];
+    plateau.querySelectorAll(".opt").forEach(b=>{
+      const i=+b.dataset.i; b.classList.add("fige");
+      const ok=q.type==="multi"?q.bonnes.includes(i):i===q.bonne;
+      if(ok)b.classList.add("juste"); else if(b.getAttribute("aria-pressed")==="true")b.classList.add("faux");
+    });
+    plateau.querySelectorAll(".vf").forEach(ligne=>{
+      const i=+ligne.dataset.i; ligne.classList.add("fige");
+      const bon=q.items[i].bonne,don=vfSel[i],sol=ligne.querySelector(".sol");
+      sol.textContent=bon?"Vrai":"Faux"; sol.className="sol "+(don===bon?"ok":"ko");
+    });
+    const s=document.getElementById("saisie"); if(s){ s.disabled=true; if(!juste)s.value=q.bonne; }
+    plateau.querySelectorAll(".ligne input").forEach((c,i)=>{ c.disabled=true; if(!juste)c.value=q.champs[i].bonne; });
+
+    document.getElementById("valider").remove();
+    acquis.push({art:q.art||"",texte:q.mention||"",compare:q.compare||null,ev:ev.id,ok:juste});
+
+    const cmp=q.compare?`<div class="compare"><div class="tit">${esc(cfg.compareLabel||"Pour comparer")}</div>${para(q.compare)}</div>`:"";
+    const last=iQ+1>=ev.questions.length;
+    document.getElementById("retour").innerHTML=`
+      <div class="mention">
+        <div class="tit">${juste?(cfg.okTag||"Validé"):(cfg.koTag||"Correction")}</div>
+        ${para(q.mention||"")}
+        ${q.art?`<div class="art">${esc(q.art)}</div>`:""}
+      </div>
+      ${cmp}
+      <button class="action" id="suite">${last?(cfg.closeCartonLabel||"Suivant"):(cfg.nextLabel||"Suivant")}</button>`;
+    document.getElementById("suite").onclick=()=>{ if(!last){ iQ++; rendre(); } else sceau(ev); };
+    document.getElementById("suite").scrollIntoView({block:"nearest"});
+  }
+
+  /* ------- sceau de fin d'événement ------- */
+  function sceau(ev){
+    const d=document.createElement("div"); d.className="sceau";
+    const g=ev.gain||{};
+    const last=iEv+1>=EV.length;
+    d.innerHTML=`<div>
+      <div class="marque"><div class="l1">${esc(ev.id)}${g.l1?` — ${esc(g.l1)}`:""}</div><div class="l2">${esc(g.l2||"")}</div><div class="l3">${esc(g.l3||"")}</div></div>
+      <div class="suite"><button class="action" id="continuer">${last?(cfg.toFinalLabel||"Terminer"):(cfg.nextCartonLabel||"Suivant")}</button></div>
+    </div>`;
+    document.body.appendChild(d);
+    const b=d.querySelector("#continuer"); b.focus();
+    b.onclick=()=>{ d.remove(); if(!last){ iEv++; iQ=0; rendre(); } else (SYN?finale():bilan()); };
+  }
+
+  /* ------- verrou final (grille de synthèse) ------- */
+  function finale(){
+    plateau.innerHTML=`
+    <div class="feuille">
+      <div class="entete">
+        <span class="tampon-cote">${esc((cfg.final&&cfg.final.tampon)||"Synthèse")}</span>
+        <p class="qualif">${esc(SYN.kicker||"")}</p>
+        <h2>${esc(SYN.titre||"Synthèse")}</h2>
+      </div>
+      <p class="recit">${recit(SYN.intro||"")}</p>
+      <div class="grille" id="syn">
+        ${SYN.champs.map((c,i)=>`<div class="ligne"><p>${esc(c.label)}</p><input type="text" inputmode="numeric" maxlength="3" data-i="${i}" aria-label="${esc(c.label)}"><span class="unite">${esc(c.unite)}</span></div>`).join("")}
+      </div>
+      <button class="action" id="remettre">${esc(SYN.cta||"Valider")}</button>
+      <div id="retour"></div>
+    </div>`;
+    const ch=[...plateau.querySelectorAll("#syn input")];
+    ch.forEach((c,i)=>c.addEventListener("keydown",e=>{if(e.key==="Enter"){ if(ch[i+1])ch[i+1].focus(); else document.getElementById("remettre").click(); }}));
+    ch[0].focus();
+    document.getElementById("remettre").onclick=()=>{
+      const v=ch.map(c=>c.value.replace(/\D/g,""));
+      if(v.some(x=>!x)){ document.getElementById("retour").innerHTML=`<div class="mention rect"><div class="tit">Fiche incomplète</div>${SYN.champs.length} repères sont attendus.</div>`; return; }
+      const faux=v.map((x,i)=>x===String(SYN.champs[i].bonne)?null:i).filter(x=>x!==null);
+      if(!faux.length){ clearInterval(chrono); bilan(); }
+      else{ penalite(60); document.getElementById("retour").innerHTML=`<div class="mention rect"><div class="tit">À revoir — une minute perdue</div>${faux.length} repère${faux.length>1?"s":""} à corriger. Tous ont été vus dans la mission.</div>`; }
+    };
+    window.scrollTo({top:0,behavior:"instant"});
+  }
+
+  /* ------- bilan + fiche imprimable ------- */
+  function bilan(){
+    clearInterval(chrono);
+    const total=acquis.length,justes=acquis.filter(a=>a.ok).length,utilise=DUREE-reste,retard=reste<0;
+    const F=cfg.final||{};
+    plateau.innerHTML=`
+    <div class="feuille">
+      <div class="entete">
+        <span class="tampon-cote">Clôture</span>
+        <p class="qualif">${esc(retard?(F.koKicker||"Terminé hors délai"):(F.okKicker||"Terminé"))}</p>
+        <h1>${esc(retard?(F.koTitle||"Le temps a manqué"):(F.okTitle||"Mission bouclée"))}</h1>
+      </div>
+      <p class="recit">${recit(retard?(F.koText||""):(F.okText||""))}</p>
+      <div class="bilan">
+        <div><span>${esc(cfg.subWordPlural||"Questions traitées")}</span><b>${total}</b></div>
+        <div><span>Justes du premier coup</span><b>${justes}/${total}</b></div>
+        <div><span>Temps utilisé</span><b>${fmt(utilise)}</b></div>
+        <div><span>Minutes perdues</span><b>${Math.round(penalites/60)}</b></div>
+      </div>
+      <h2 style="margin-bottom:.8rem">${esc(F.ficheTitle||"Fiche de révision")}</h2>
+      <ul class="fiche">
+        ${acquis.map(a=>`<li><b>${esc(a.art)} — ${esc(a.ev)}${a.ok?"":" · reprise"}</b>${para(a.texte)}${a.compare?`<br><br><span style="color:var(--ambre)">⇄</span> ${para(a.compare)}`:""}</li>`).join("")}
+      </ul>
+      <button class="action" id="imprimer">Imprimer la fiche</button>
+      <button class="action mineur" id="rejouer">${esc(F.replayLabel||"Recommencer")}</button>
+    </div>
+    ${F.foot?`<p class="pied">${esc(F.foot)}</p>`:""}`;
+    document.getElementById("imprimer").onclick=()=>window.print();
+    document.getElementById("rejouer").onclick=()=>{ reste=DUREE; demarre=false; iEv=0; iQ=0; penalites=0; acquis.length=0; pendule(); accueil(); };
+    window.scrollTo({top:0,behavior:"instant"});
+  }
+
+  pendule(); accueil();
+}
+
+return { run };
+})();
+
+</script>
+<script>
+CNJ.run({
+  theme:"violet",
+  serv:{a:"Recueil d'annales · Procédure pénale · Carton V", b:"École nationale de police — salle de révision"},
+  cadreTag:"Thème : Procédure pénale",
+  pendule:{startClock:"20:00",label:"Épreuve blanche à 21:00",remainingLabel:"de révision",overLabel:"L'épreuve commence",durationMin:35,debutMin:1200,finMin:1260,tendu:300},
+  cartonWord:"Carton", subWord:"fiche", subWordPlural:"Fiches traitées",
+  validerLabel:"Valider la fiche", nextLabel:"Fiche suivante", closeCartonLabel:"Carton suivant",
+  nextCartonLabel:"Carton suivant", toFinalLabel:"Bilan", penaltyLabel:"Une erreur = une minute de révision",
+  okTag:"Fiche acquise", koTag:"Correction",
+  accueil:{
+    kicker:"Recueil d'annales — procédure pénale · mission V",
+    titre:"Acteurs judiciaires, poursuites & mineurs",
+    intro:"Le dernier carton de procédure pénale, le plus institutionnel. {nbQ} fiches : qui fait quoi (habilitation, APJ, ministère public, magistrats), comment on poursuit, et le régime propre aux mineurs.\n\nUne erreur coûte <em>une minute</em>. Tout est corrigé, article à l'appui.\n\nPas de verrou chiffré ici : la synthèse tient dans la fiche finale.",
+    cta:"Ouvrir le premier carton",
+    foot:"Thème procédure pénale — durée estimée 35 minutes — jeu solo, hors connexion"
+  },
+  events:[
+    {id:"CARTON I",heure:"Acteurs",titre:"Qui fait quoi",nature:"Fiche de révision — habilitation et qualités",gain:{l1:"bouclé",l2:"HABILITATION",l3:"Qui exerce de plein droit"},
+     recit:"« On termine par l'ossature judiciaire. Qui est habilité, qui met en mouvement l'action publique, qui surveille la police judiciaire. »",
+     questions:[
+      {type:"multi",enonce:"Parmi ces personnes, lesquelles ne sont pas soumises à l'habilitation et exercent directement leurs fonctions d'OPJ ?",consigne:"Deux réponses attendues",
+       options:["Les maires","Les directeurs et sous-directeurs de la police judiciaire","Les gardiens de la paix","Les brigadiers-chefs"],
+       bonnes:[0,1],indice:"Deux catégories qui tiennent leur qualité de leur fonction même.",
+       mention:"Les maires ainsi que les directeurs et sous-directeurs de la police judiciaire exercent leurs attributions d'OPJ sans être soumis à l'habilitation : leur qualité découle directement de leur fonction.",art:"Art. 16 CPP"},
+      {type:"multi",enonce:"Quelles conditions permettent à un APJ de l'article 20 du CPP d'exercer les attributions attachées à cette qualité ?",consigne:"Deux réponses attendues",
+       options:["Être affecté à un emploi comportant l'exercice de la police judiciaire","Ne pas participer à des opérations de maintien de l'ordre en unité constituée","Être titulaire du grade de brigadier","Avoir suivi la formation OPJ"],
+       bonnes:[0,1],indice:"Une condition d'affectation, une condition d'emploi.",
+       mention:"L'APJ de l'article 20 exerce ses attributions s'il est affecté à un emploi comportant l'exercice de la police judiciaire, et tant qu'il ne participe pas à une opération de maintien de l'ordre en unité constituée.",art:"Art. 20 CPP"},
+      {type:"multi",enonce:"Quelles sont les caractéristiques du ministère public ?",consigne:"Deux réponses attendues",
+       options:["Il est indivisible","Il est irresponsable","Il est inamovible","Il est indépendant du garde des sceaux"],
+       bonnes:[0,1],indice:"Deux traits classiques : un corps qui parle d'une seule voix, et qui n'engage pas sa responsabilité personnelle.",
+       mention:"Le ministère public est indivisible (un magistrat du parquet peut en remplacer un autre) et irresponsable (ses actes n'engagent pas sa responsabilité civile personnelle). Il est en revanche hiérarchisé et amovible.",art:"Fascicule ministère public"},
+      {type:"multi",enonce:"Quelles autorités exercent la surveillance et le contrôle de la mission de police judiciaire ?",consigne:"Deux réponses attendues",
+       options:["Le procureur général près la cour d'appel (surveillance)","La chambre de l'instruction (contrôle)","Le préfet de département","Le directeur général de la police nationale"],
+       bonnes:[0,1],indice:"Un magistrat du parquet pour la surveillance, une juridiction pour le contrôle.",
+       mention:"La police judiciaire est placée sous la surveillance du procureur général près la cour d'appel et sous le contrôle de la chambre de l'instruction. Ce sont des autorités judiciaires, non administratives.",art:"Art. 13, 224 et s. CPP"}
+     ]},
+    {id:"CARTON II",heure:"Poursuites",titre:"Mettre en mouvement l'action publique",nature:"Fiche de révision — poursuites et jugement",gain:{l1:"bouclé",l2:"4 PHASES",l3:"Enquête → jugement"},
+     recit:"« La chaîne pénale, maintenant : ses phases, qui déclenche l'action, et par quels actes on saisit les juridictions. »",
+     questions:[
+      {type:"multi",enonce:"Quelles sont les quatre phases du procès pénal ?",consigne:"Quatre réponses attendues",
+       options:["L'enquête","La poursuite","L'instruction","Le jugement","L'exécution des peines","La médiation"],
+       bonnes:[0,1,2,3],indice:"De la recherche des infractions au verdict — quatre étapes.",
+       mention:"Les quatre phases : l'enquête (recherche, constatation, identification, interpellation), la poursuite, l'instruction, le jugement. L'exécution des peines vient après le procès proprement dit.",art:"Fascicule tome 1"},
+      {type:"multi",enonce:"Qui peut mettre en mouvement l'action publique ?",consigne:"Deux réponses attendues",
+       options:["Le ministère public","La partie lésée","L'officier de police judiciaire","Le juge des libertés et de la détention"],
+       bonnes:[0,1],indice:"Le parquet, et la victime.",
+       mention:"L'action publique peut être mise en mouvement par le ministère public et par la partie lésée (par constitution de partie civile ou citation directe). L'OPJ ne met jamais l'action publique en mouvement.",art:"Art. 1 CPP"},
+      {type:"multi",enonce:"De manière générale, quelles décisions le ministère public peut-il prendre lorsqu'une infraction lui est portée à connaissance ?",consigne:"Trois réponses attendues",
+       options:["Engager les poursuites","Mettre en œuvre une procédure alternative aux poursuites","Classer sans suite","Prononcer une peine","Ordonner une détention provisoire"],
+       bonnes:[0,1,2],indice:"Le triptyque de l'opportunité des poursuites.",
+       mention:"Le procureur apprécie l'opportunité des poursuites : il peut engager les poursuites, mettre en œuvre une alternative aux poursuites, ou classer sans suite. Prononcer une peine ou ordonner une détention relève d'un magistrat du siège.",art:"Art. 40-1 CPP"},
+      {type:"multi",enonce:"Citez deux causes générales d'extinction de l'action publique.",consigne:"Deux réponses attendues",
+       options:["L'amnistie","La prescription de l'action publique","Le décès de la personne mise en cause","La garde à vue","Le classement sans suite"],
+       bonnes:[0,1],indice:"Parmi : amnistie, abrogation de la loi, décès, chose jugée, prescription.",
+       mention:"Sont des causes d'extinction de l'action publique : l'amnistie, l'abrogation de la loi pénale, le décès de la personne poursuivie, l'autorité de la chose jugée, et la prescription. Le classement sans suite, lui, ne l'éteint pas définitivement.",art:"Art. 6 CPP"},
+      {type:"qcm",enonce:"À l'issue de sa garde à vue pour un crime, le mis en cause est présenté au procureur. Quel acte requiert le juge d'instruction pour ouvrir une information ?",
+       options:["Le réquisitoire introductif (ou réquisitoire aux fins d'informer)","L'ordonnance de renvoi","Le mandat de dépôt","La citation directe"],
+       bonne:0,indice:"Un réquisitoire qui introduit l'information.",
+       mention:"Le réquisitoire introductif, ou réquisitoire aux fins d'informer, saisit le juge d'instruction et fixe l'étendue de sa saisine. L'instruction est obligatoire en matière criminelle.",art:"Art. 80 CPP"},
+      {type:"multi",enonce:"Citez cinq possibilités offertes au procureur pour saisir la juridiction de jugement.",consigne:"Cinq réponses attendues",
+       options:["La citation directe","La convocation en justice","La convocation par procès-verbal","La comparution immédiate","La comparution sur reconnaissance préalable de culpabilité","Le réquisitoire introductif","Le classement sans suite"],
+       bonnes:[0,1,2,3,4],indice:"Cinq voies directes ; deux intrus (l'un saisit le juge d'instruction, l'autre éteint la poursuite).",
+       mention:"Cinq modes de saisine directe : citation directe, convocation en justice, convocation par procès-verbal, comparution immédiate, CRPC (on peut ajouter la comparution à délai différé et l'ordonnance pénale). Le réquisitoire introductif saisit le juge d'instruction ; le classement sans suite ne saisit personne.",art:"Art. 388 et s. CPP"},
+      {type:"qcm",enonce:"À la suite d'un différend de voisinage, M. DUPUIS (18 ans) a porté un coup de balai à sa voisine (ITT 6 jours, plainte). Sous quelle condition la CRPC peut-elle être mise en œuvre ?",
+       options:["Si l'auteur reconnaît les faits qui lui sont reprochés lors de ses auditions","Si la victime accepte une médiation","Si le préjudice est intégralement réparé","Si les faits constituent un crime"],
+       bonne:0,indice:"La CRPC repose sur un aveu.",
+       mention:"La CRPC suppose que l'auteur reconnaisse les faits reprochés. C'est le préalable indispensable à cette procédure de « plaider-coupable » à la française.",art:"Art. 495-7 CPP"}
+     ]},
+    {id:"CARTON III",heure:"Mineurs",titre:"Le régime des mineurs",nature:"Fiche de révision — juridictions et mesures",gain:{l1:"bouclé",l2:"MINEURS",l3:"Un régime protecteur"},
+     recit:"« Dernier carton du thème : les mineurs. Juridictions spécialisées, retenue, garde à vue — un régime à part, plein de pièges de seuils. »",
+     questions:[
+      {type:"multi",enonce:"Quelles personnes résidant en France ne peuvent être impliquées dans une enquête préliminaire ? (deux exceptions)",consigne:"Deux réponses attendues",
+       options:["Les agents diplomatiques accrédités en France","Le Président de la République","Les parlementaires","Les magistrats"],
+       bonnes:[0,1],indice:"Une immunité diplomatique, une immunité de fonction au sommet de l'État.",
+       mention:"Deux exceptions : les agents diplomatiques accrédités en France (immunité diplomatique) et le Président de la République (irresponsabilité pendant son mandat). Parlementaires et magistrats, eux, peuvent être impliqués.",art:"Fascicule enquête préliminaire"},
+      {type:"multi",enonce:"Quelles sont les juridictions spécialisées dans les affaires de mineurs ?",consigne:"Trois réponses attendues",
+       options:["Le juge des enfants","Le tribunal pour enfants","La cour d'assises des mineurs","Le tribunal de police","La cour d'appel"],
+       bonnes:[0,1,2],indice:"Trois juridictions dédiées, du juge unique à la cour d'assises.",
+       mention:"Les juridictions spécialisées pour mineurs sont le juge des enfants, le tribunal pour enfants et la cour d'assises des mineurs. On peut y ajouter le juge d'instruction et le JLD chargés des mineurs.",art:"Code de la justice pénale des mineurs"},
+      {type:"qcm",enonce:"Tous les mineurs peuvent-ils être placés en garde à vue ?",
+       options:["Non","Oui, sans distinction d'âge","Oui, à partir de 10 ans","Oui, à partir de 16 ans"],
+       bonne:0,indice:"Les plus jeunes relèvent d'un autre régime.",
+       mention:"Non. Le mineur de moins de treize ans ne peut être placé en garde à vue : il relève, sous conditions strictes, d'une retenue. La garde à vue n'est possible qu'à partir de treize ans.",art:"Code de la justice pénale des mineurs"},
+      {type:"multi",enonce:"En enquête préliminaire, quelles sont les conditions de la prolongation de la garde à vue pour un mineur de 15 ans ?",consigne:"Deux réponses attendues",
+       options:["Prolongation décidée par le procureur de la République","Infraction punie d'au moins trois ans d'emprisonnement","Accord du représentant légal","Infraction punie d'au moins un an d'emprisonnement"],
+       bonnes:[0,1],indice:"Un magistrat qui décide, et un seuil de peine plus élevé que pour le majeur.",
+       mention:"La prolongation de la garde à vue d'un mineur de 15 ans suppose une décision du procureur et une infraction punie d'au moins trois ans d'emprisonnement — seuil plus exigeant que celui d'un an applicable au majeur.",art:"Code de la justice pénale des mineurs"},
+      {type:"multi",enonce:"Citez des droits de l'article 10-2 du CPP devant être notifiés à un mineur de 17 ans victime d'un vol de scooter.",consigne:"Quatre réponses attendues",
+       options:["Le droit à la réparation du préjudice","Le droit de se constituer partie civile","Le droit d'être assisté par un avocat","Le droit d'être aidé par une association d'aide aux victimes","Le droit de garder le silence","Le droit de ne pas porter plainte"],
+       bonnes:[0,1,2,3],indice:"Les droits de la victime : réparation, procédure, assistance, accompagnement.",
+       mention:"La victime est informée notamment de son droit à réparation, de se constituer partie civile, d'être assistée d'un avocat, d'être aidée par une association d'aide aux victimes, de saisir la CIVI, et pour le mineur d'être accompagné de son représentant légal.",art:"Art. 10-2 CPP"},
+      {type:"vf",enonce:"Sur les juridictions compétentes, ces affirmations sont-elles vraies ou fausses ?",consigne:"Vrai ou faux pour chaque ligne",
+       items:[
+        {label:"La cour criminelle départementale peut juger les crimes des mineurs",bonne:false},
+        {label:"Le tribunal de police juge uniquement les contraventions des majeurs",bonne:false},
+        {label:"La cour d'assises est compétente pour un meurtre commis par un majeur",bonne:true},
+        {label:"Le tribunal correctionnel est compétent pour les délits des majeurs",bonne:true},
+        {label:"La cour d'assises des mineurs est compétente pour tous les crimes de mineurs",bonne:false}
+       ],
+       indice:"Attention aux « uniquement » et aux « tous » : ce sont souvent eux qui rendent l'affirmation fausse.",
+       mention:"La CCD ne juge pas les crimes des mineurs. Le tribunal de police juge les contraventions, y compris de mineurs dans certains cas — le « uniquement » est faux. Cour d'assises pour le meurtre d'un majeur : vrai. Tribunal correctionnel pour les délits de majeurs : vrai. La cour d'assises des mineurs ne juge pas « tous » les crimes de mineurs (les 16-18 ans notamment).",art:"Fascicule juridictions"},
+      {type:"vf",enonce:"Sur la retenue et la garde à vue des mineurs, vrai ou faux ?",consigne:"Vrai ou faux pour chaque ligne",
+       items:[
+        {label:"La retenue d'un mineur peut être décidée sur la seule initiative de l'OPJ",bonne:false},
+        {label:"La garde à vue d'un mineur de 15 ans peut être prolongée pour un délit puni de 3 ans",bonne:false},
+        {label:"L'avocat est obligatoire pour tout mineur en garde à vue",bonne:true},
+        {label:"La prolongation de la garde à vue d'un mineur de 17 ans est possible pour un délit puni d'un an",bonne:false},
+        {label:"La retenue d'un mineur de 12 ans ne peut être prolongée qu'en cas de crime",bonne:false}
+       ],
+       indice:"Le mineur bénéficie de garanties renforcées : l'avocat, notamment, n'est jamais facultatif.",
+       mention:"La retenue suppose l'accord d'un magistrat, non la seule initiative de l'OPJ. Pour le mineur de 15 ans, la prolongation exige un seuil précis prévu par les textes. L'avocat est bien obligatoire pour tout mineur gardé à vue. Les affirmations sur les seuils de prolongation (17 ans / 1 an) et sur la retenue du mineur de 12 ans sont fausses telles que formulées.",art:"Code de la justice pénale des mineurs"}
+     ]}
+  ],
+  final:{okKicker:"Révision bouclée",okTitle:"Thème procédure bouclé",okText:"Acteurs, poursuites, mineurs : le dernier carton de procédure pénale est en place. Le thème est complet.",
+    koKicker:"Révision bouclée hors délai",koTitle:"Le temps a manqué",koText:"Le fond est là, le tempo non. Ce carton institutionnel se révise par petites touches régulières.",
+    ficheTitle:"Fiche de révision — acteurs, poursuites & mineurs",replayLabel:"Refaire le carton",foot:"Recueil d'annales · procédure pénale — mission V sur V"}
+});
+</script>
+</html>

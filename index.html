@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Permanence — révisions du contrôle national judiciaire</title>
+<style>
+:root{
+  --bureau:#3C4642;
+  --bureau-fonce:#2E3835;
+  --pelure:#D9DFD6;
+  --pelure-ombre:#C3CCC1;
+  --encre:#19221F;
+  --encre-pale:#5A6863;
+  --tampon:#4A2E7A;
+  --tampon-voile:rgba(74,46,122,.12);
+  --rouge:#9C3125;
+  --vert:#2F6B48;
+  --mono:"Courier New",Courier,ui-monospace,monospace;
+  --etroit:"Arial Narrow","Helvetica Neue Condensed",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bureau);
+  background-image:
+    repeating-linear-gradient(90deg,rgba(0,0,0,.06) 0 1px,transparent 1px 4px),
+    radial-gradient(120% 80% at 50% 0%,rgba(255,255,255,.06),transparent 60%);
+  color:var(--encre);font-family:var(--mono);font-size:16px;line-height:1.55;min-height:100vh;
+}
+
+/* ----- couverture de dossier ----- */
+.couverture{
+  max-width:860px;margin:0 auto;padding:clamp(1.4rem,5vw,3.4rem) clamp(.8rem,4vw,1.5rem) 1rem;
+}
+.dossier{
+  position:relative;background:var(--pelure);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.5),transparent 16%);
+  box-shadow:0 1px 0 var(--pelure-ombre),0 16px 40px rgba(0,0,0,.36);
+  padding:clamp(1.4rem,5vw,2.8rem) clamp(1.1rem,5vw,2.8rem) clamp(1.6rem,5vw,2.6rem) clamp(2rem,7vw,3.8rem);
+}
+.dossier::before{content:"";position:absolute;top:0;bottom:0;left:clamp(1.1rem,4vw,2.2rem);width:1px;background:rgba(156,49,37,.35)}
+.ref{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.24em;font-size:.62rem;color:var(--encre-pale)}
+.ref b{display:block;letter-spacing:.3em;opacity:.6;font-weight:400;margin-bottom:.2rem}
+.tampon-titre{
+  float:right;margin:-.2rem -.4rem .6rem 1rem;border:2px solid var(--tampon);color:var(--tampon);
+  font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.66rem;
+  padding:.3rem .6rem;transform:rotate(3deg);text-align:center;line-height:1.3;
+}
+.tampon-titre b{display:block;font-size:.9rem;letter-spacing:.08em}
+h1{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.05em;font-weight:bold;
+  font-size:clamp(1.9rem,8vw,3.1rem);line-height:1.02;margin:.6rem 0 .3rem}
+.sous{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.74rem;color:var(--encre-pale);margin:0 0 1.4rem}
+.intro{white-space:pre-line;margin:0;font-size:.96rem;max-width:52ch}
+.intro em{font-style:normal;background:var(--tampon-voile);padding:0 .18em}
+
+/* ----- présentoir ----- */
+.presentoir{max-width:860px;margin:0 auto;padding:clamp(1.2rem,4vw,2rem) clamp(.8rem,4vw,1.5rem) 4rem}
+.rubrique{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.22em;font-size:.7rem;color:#AEB8B1;
+  margin:1.6rem .2rem .8rem;display:flex;align-items:center;gap:.8rem}
+.rubrique::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.14)}
+
+.grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:clamp(.8rem,2.5vw,1.2rem)}
+
+.cote{
+  display:flex;flex-direction:column;text-decoration:none;color:inherit;position:relative;
+  background:var(--pelure);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.5),transparent 22%);
+  box-shadow:0 1px 0 var(--pelure-ombre),0 10px 24px rgba(0,0,0,.28);
+  padding:1.1rem 1.2rem 1.2rem 1.5rem;transition:transform .13s,box-shadow .13s;
+}
+.cote::before{content:"";position:absolute;top:0;bottom:0;left:.7rem;width:1px;background:rgba(156,49,37,.32)}
+.cote:hover,.cote:focus-visible{transform:translateY(-3px);box-shadow:0 1px 0 var(--pelure-ombre),0 16px 32px rgba(0,0,0,.36);outline:none}
+.cote:focus-visible{outline:2px solid #C9B8E8;outline-offset:3px}
+
+.cote .haut{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;margin-bottom:.6rem}
+.cote .num{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.6rem;color:var(--encre-pale);padding-top:.15rem}
+.cote .marque{border:1.5px solid var(--rouge);color:var(--rouge);font-family:var(--etroit);text-transform:uppercase;
+  letter-spacing:.12em;font-size:.58rem;padding:.12rem .4rem;transform:rotate(1.5deg);white-space:nowrap}
+.cote .marque.entrain{border-color:var(--tampon);color:var(--tampon)}
+.cote h2{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.04em;font-weight:bold;
+  font-size:1.22rem;line-height:1.1;margin:0 0 .5rem}
+.cote .obj{font-size:.86rem;margin:0 0 .9rem;color:var(--encre)}
+.cote .meta{margin-top:auto;display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.9rem}
+.cote .tag{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.08em;font-size:.6rem;
+  border:1px solid rgba(25,34,31,.28);color:var(--encre-pale);padding:.14rem .45rem}
+.cote .ouvrir{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-weight:bold;font-size:.72rem;
+  color:var(--tampon);display:flex;align-items:center;gap:.4rem}
+.cote .ouvrir::after{content:"→";transition:transform .13s}
+.cote:hover .ouvrir::after{transform:translateX(3px)}
+.cote .duree{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.12em;font-size:.6rem;color:var(--encre-pale);margin-top:.5rem}
+
+.avenir{
+  border:1px dashed rgba(255,255,255,.22);background:transparent;box-shadow:none;
+  color:#9AA69F;padding:1.4rem 1.2rem;display:flex;flex-direction:column;justify-content:center;gap:.4rem;text-align:center;
+}
+.avenir::before{display:none}
+.avenir .num{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.62rem}
+.avenir p{margin:0;font-size:.82rem}
+
+.pied{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:#8B958E;text-align:center;margin-top:2.4rem;line-height:1.7}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="couverture">
+  <div class="dossier">
+    <div class="tampon-titre">Usage<b>Révision</b></div>
+    <p class="ref"><b>École nationale de police</b>Contrôle national judiciaire — socle initial</p>
+    <h1>Permanence</h1>
+    <p class="sous">Missions de révision — procédure et droit pénal</p>
+    <p class="intro">Chaque mission est un dossier à traiter avant la relève. Vous qualifiez des faits, tenez des délais, décidez d'un scellé, nommez des actes — le chronomètre tourne, et <em>chaque réponse est expliquée, article à l'appui</em>.
+
+À la fin de chaque partie, une fiche de révision imprimable reprend tout ce que la vacation a coûté. Aucune connexion n'est requise : ouvrez une mission et jouez.</p>
+  </div>
+</div>
+
+<main class="presentoir">
+  <div id="liste"></div>
+
+  <p class="pied">
+    Entraînement pédagogique — sans valeur officielle<br>
+    Les articles cités renvoient au code de procédure pénale et au code pénal en vigueur<br>
+    Infractions routières et sexuelles exclues des supports
+  </p>
+</main>
+
+<script>
+"use strict";
+
+/* =====================================================================
+   CATALOGUE DES MISSIONS
+   Pour ajouter une mission plus tard : copier un bloc, changer les
+   champs, et vérifier que "chemin" pointe bien vers le fichier dans
+   le dépôt. Rien d'autre à toucher.
+   - rubrique : "Annales du CNJ" ou "Entraînements thématiques"
+   - marque   : petit texte du tampon (ex. "Annale 276", "Thématique")
+   - type     : "annale" (tampon rouge) ou "entrainement" (tampon violet)
+   ===================================================================== */
+const MISSIONS = [
+  {
+    rubrique:"Recueil d'annales — procédure pénale",
+    num:"Mission I sur V",
+    marque:"Flagrance",
+    type:"annale",
+    titre:"Cadres d'enquête & flagrance",
+    objet:"Le socle de la flagrance en trois cartons : reconnaître le cadre, connaître ses pouvoirs et sa durée, repérer les pièges. Réponses conformes au corrigé du recueil.",
+    tags:["Flagrance","Durée & prolongation","Perquisition","Heures légales","Constatations"],
+    duree:"≈ 25 min · 15 fiches",
+    chemin:"annales/recueil-proc-1-cadres-enquete.html"
+  },
+  {
+    rubrique:"Recueil d'annales — procédure pénale",
+    num:"Mission II sur V",
+    marque:"Garde à vue",
+    type:"annale",
+    titre:"La garde à vue",
+    objet:"La mesure la plus contrôlée de l'enquête : qui la décide, à quelles conditions, pour combien de temps, à partir de quand, et qui la prolonge. Avec les calculs d'heures de départ.",
+    tags:["Décision OPJ","Avis parquet","24 + 24","Point de départ","Prolongation"],
+    duree:"≈ 30 min · 14 fiches",
+    chemin:"annales/recueil-proc-2-garde-a-vue.html"
+  },
+  {
+    rubrique:"Recueil d'annales — procédure pénale",
+    num:"Mission III sur V",
+    marque:"Perquisitions",
+    type:"annale",
+    titre:"Perquisitions, fouilles & scellés",
+    objet:"Le formalisme du domicile et de la personne : assentiment et autorisation du JLD, heures légales, présence de témoins, fouilles de sécurité et intégrales, scellés et enregistrements.",
+    tags:["Assentiment","Autorisation JLD","Heures légales","Fouille intégrale","Scellés"],
+    duree:"≈ 30 min · 16 fiches",
+    chemin:"annales/recueil-proc-3-perquisitions.html"
+  },
+  {
+    rubrique:"Recueil d'annales — procédure pénale",
+    num:"Mission IV sur V",
+    marque:"Identité & mandats",
+    type:"annale",
+    titre:"Contrôles d'identité & mandats",
+    objet:"Le triptyque contrôle / vérification / relevé d'identité et la famille des mandats, avec les calculs d'heures et la distinction entre mandats coercitifs et non coercitifs.",
+    tags:["Contrôle d'identité","Vérification 4 h","Document probant","Mandats"],
+    duree:"≈ 28 min · 15 fiches",
+    chemin:"annales/recueil-proc-4-identite-mandats.html"
+  },
+  {
+    rubrique:"Recueil d'annales — procédure pénale",
+    num:"Mission V sur V",
+    marque:"Acteurs & mineurs",
+    type:"annale",
+    titre:"Acteurs judiciaires, poursuites & mineurs",
+    objet:"L'ossature judiciaire : habilitation et qualités, ministère public, surveillance de la PJ, phases du procès, modes de saisine, et le régime protecteur des mineurs.",
+    tags:["Habilitation","Ministère public","Action publique","Saisine","Mineurs"],
+    duree:"≈ 35 min · 20 fiches",
+    chemin:"annales/recueil-proc-5-acteurs-poursuites.html"
+  },
+  {
+    rubrique:"Recueil d'annales — mission spéciale",
+    num:"Mission XIII",
+    marque:"Transpositions",
+    type:"annale",
+    titre:"Transpositions & exclusions",
+    objet:"Les questions du recueil dont le fait support relevait d'une infraction routière ou sexuelle, rejouées sur un contexte neutre de gravité équivalente. Le point de droit testé est conservé et la transposition signalée.",
+    tags:["Tentative de crime","GAV criminelle","Corruption passive","Transparence"],
+    duree:"≈ 20 min · 8 fiches",
+    chemin:"annales/recueil-special-13-exclusions.html"
+  },
+  {
+    rubrique:"Cadres d'enquête — flagrance vs préliminaire",
+    num:"Diptyque · I sur II",
+    marque:"Flagrance",
+    type:"entrainement",
+    titre:"La flagrance · Le braquage",
+    objet:"Un vol à main armée pris sur le fait, mené de la saisine à la fin de garde à vue. À chaque acte, un encadré montre ce qui basculerait en enquête préliminaire.",
+    tags:["Flagrance","Réquisitions","Fichiers","Perquisition","GAV","Signalisation"],
+    duree:"≈ 50 min · 26 séquences",
+    chemin:"entrainements/cadre-1-flagrance-le-braquage.html"
+  },
+  {
+    rubrique:"Cadres d'enquête — flagrance vs préliminaire",
+    num:"Diptyque · II sur II",
+    marque:"Préliminaire",
+    type:"entrainement",
+    titre:"La préliminaire · Les cambriolages",
+    objet:"Une série de cambriolages découverte a posteriori, sur enquête du parquet. Même chronologie que la flagrance, mais chaque acte bute sur l'assentiment, l'autorisation d'un magistrat ou la convocation.",
+    tags:["Préliminaire","Assentiment","Autorisation JLD","Réquisitions","Délai d'enquête","Issue correctionnelle"],
+    duree:"≈ 50 min · 24 séquences",
+    chemin:"entrainements/cadre-2-preliminaire-les-cambriolages.html"
+  },
+  {
+    rubrique:"Annales du CNJ",
+    num:"Dossier 01",
+    marque:"Annale 276",
+    type:"annale",
+    titre:"Vacation au centre de commandement",
+    objet:"Sept événements d'une vacation de 24 heures : qualification d'infractions, prescription, tentative, flagrance, garde à vue criminelle, scellé, modes de saisine et libertés individuelles.",
+    tags:["Qualification","Tentative","Garde à vue","Flagrance","Domicile"],
+    duree:"≈ 45 min · 22 séquences",
+    chemin:"annales/cnj-276-vacation-au-cic.html"
+  },
+  {
+    rubrique:"Entraînements thématiques",
+    num:"Dossier 02",
+    marque:"Thématique",
+    type:"entrainement",
+    titre:"Permanence de nuit",
+    objet:"Six cotes à régulariser avant la transmission au parquet : cadre d'enquête, qualités judiciaires, garde à vue, perquisition, audition libre, clôture. Pour poser les bases.",
+    tags:["Cadre d'enquête","OPJ / APJ / APJA","Perquisition","Audition libre"],
+    duree:"≈ 25 min · 16 séquences",
+    chemin:"entrainements/permanence-de-nuit.html"
+  }
+  /* , { ...prochaine mission... } */
+];
+
+/* Missions du recueil encore à monter (affichées grisées, par rubrique) */
+const A_VENIR_LISTE = [
+  {rubrique:"Recueil d'annales — droit pénal", titre:"Classification, prescription & tentative", num:"Mission VI"},
+  {rubrique:"Recueil d'annales — droit pénal", titre:"Responsabilité, complicité & légalité", num:"Mission VII"},
+  {rubrique:"Recueil d'annales — droit pénal", titre:"Atteintes aux personnes", num:"Mission VIII"},
+  {rubrique:"Recueil d'annales — droit pénal", titre:"Atteintes aux biens", num:"Mission IX"},
+  {rubrique:"Recueil d'annales — droit pénal", titre:"Discriminations, armes, immunités & peines", num:"Mission X"},
+  {rubrique:"Recueil d'annales — libertés publiques", titre:"Sûreté, domicile & mesures privatives", num:"Mission XI"},
+  {rubrique:"Recueil d'annales — libertés publiques", titre:"Sources, autorités & police administrative", num:"Mission XII"}
+];
+
+/* ------- rendu ------- */
+const liste = document.getElementById("liste");
+const esc = t => String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+const rubriques = [...new Set(MISSIONS.map(m=>m.rubrique))];
+let html = "";
+
+rubriques.forEach(r=>{
+  html += `<h3 class="rubrique">${esc(r)}</h3><div class="grille">`;
+  MISSIONS.filter(m=>m.rubrique===r).forEach(m=>{
+    html += `
+    <a class="cote" href="${esc(m.chemin)}">
+      <div class="haut">
+        <span class="num">${esc(m.num)}</span>
+        <span class="marque ${m.type==="entrainement"?"entrain":""}">${esc(m.marque)}</span>
+      </div>
+      <h2>${esc(m.titre)}</h2>
+      <p class="obj">${esc(m.objet)}</p>
+      <div class="meta">${m.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join("")}</div>
+      <span class="ouvrir">Ouvrir le dossier</span>
+      <span class="duree">${esc(m.duree)}</span>
+    </a>`;
+  });
+  html += `</div>`;
+});
+
+const rubriquesAvenir = [...new Set(A_VENIR_LISTE.map(m=>m.rubrique))];
+rubriquesAvenir.forEach(r=>{
+  html += `<h3 class="rubrique">${esc(r)} <span style="opacity:.5;font-size:.7em">· en préparation</span></h3><div class="grille">`;
+  A_VENIR_LISTE.filter(m=>m.rubrique===r).forEach(m=>{
+    html += `<div class="cote avenir"><span class="num">${esc(m.num)}</span>
+      <h2 style="opacity:.75">${esc(m.titre)}</h2>
+      <p>En cours de montage</p></div>`;
+  });
+  html += `</div>`;
+});
+
+liste.innerHTML = html;
+</script>
+</body>
+</html>
