@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Permanence de nuit — procédure pénale</title>
+<style>
+:root{
+  --bureau:#3C4642;
+  --bureau-fonce:#2E3835;
+  --pelure:#D9DFD6;
+  --pelure-ombre:#C3CCC1;
+  --encre:#19221F;
+  --encre-pale:#5A6863;
+  --tampon:#4A2E7A;
+  --tampon-voile:rgba(74,46,122,.12);
+  --rouge:#9C3125;
+  --mono:"Courier New",Courier,ui-monospace,monospace;
+  --etroit:"Arial Narrow","Helvetica Neue Condensed",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bureau);
+  background-image:
+    repeating-linear-gradient(90deg,rgba(0,0,0,.06) 0 1px,transparent 1px 4px),
+    radial-gradient(120% 80% at 50% 0%,rgba(255,255,255,.06),transparent 60%);
+  color:var(--encre);
+  font-family:var(--mono);
+  font-size:16px;
+  line-height:1.55;
+  min-height:100vh;
+}
+
+/* ---------- bandeau ---------- */
+header{
+  position:sticky;top:0;z-index:30;
+  background:var(--bureau-fonce);
+  border-bottom:2px solid #1D2422;
+  color:#C8D2CC;
+  padding:.5rem clamp(.7rem,3vw,1.6rem);
+  display:flex;align-items:center;gap:clamp(.6rem,3vw,2rem);flex-wrap:wrap;
+}
+.serv{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.68rem;line-height:1.3;opacity:.7}
+.serv b{display:block;font-weight:400;letter-spacing:.22em;opacity:.55;font-size:.6rem}
+.pendule{margin-left:auto;text-align:right}
+.pendule .h{font-size:clamp(1.3rem,5vw,1.7rem);font-weight:bold;letter-spacing:.06em;color:#EDEFE9}
+.pendule .r{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.62rem;opacity:.65}
+.pendule.tendu .h{color:#E4A79C}
+.jauge{position:absolute;left:0;bottom:0;height:2px;background:var(--rouge);width:0%;transition:width 1s linear}
+header{position:sticky}
+.barre{position:relative}
+
+/* ---------- plateau ---------- */
+main{max-width:780px;margin:0 auto;padding:clamp(1rem,4vw,2.6rem) clamp(.7rem,4vw,1.5rem) 5rem}
+
+.feuille{
+  position:relative;
+  background:var(--pelure);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.5),transparent 18%);
+  box-shadow:0 1px 0 var(--pelure-ombre),0 14px 34px rgba(0,0,0,.34);
+  padding:clamp(1.1rem,4vw,2.2rem) clamp(1rem,4vw,2.4rem) clamp(1.4rem,4vw,2.2rem) clamp(1.9rem,6vw,3.4rem);
+}
+.feuille::before{
+  content:"";position:absolute;top:0;bottom:0;left:clamp(1.1rem,3.5vw,2rem);
+  width:1px;background:rgba(156,49,37,.35);
+}
+.entete{border-bottom:1px solid rgba(25,34,31,.25);padding-bottom:.8rem;margin-bottom:1.3rem}
+.tampon-cote{
+  float:right;margin:-.3rem -.4rem .4rem 1rem;
+  border:1.5px solid var(--rouge);color:var(--rouge);
+  font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;
+  font-size:.7rem;padding:.18rem .5rem;transform:rotate(1.6deg);
+}
+.qualif{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.2em;font-size:.66rem;color:var(--encre-pale);margin:0 0 .35rem}
+h1,h2{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.07em;font-weight:bold;margin:0;line-height:1.15}
+h1{font-size:clamp(1.35rem,5.5vw,2rem)}
+h2{font-size:clamp(1.05rem,4.4vw,1.35rem)}
+.recit{white-space:pre-line;margin:0 0 1.4rem;font-size:.95rem}
+.recit em{font-style:normal;background:rgba(74,46,122,.13);padding:0 .18em}
+
+/* ---------- question ---------- */
+.question{border-top:1px dashed rgba(25,34,31,.3);padding-top:1.2rem}
+.compteur{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;color:var(--encre-pale);margin-bottom:.5rem}
+.enonce{font-weight:bold;margin:0 0 1rem;font-size:1rem}
+.consigne{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.14em;font-size:.64rem;color:var(--tampon);margin:-.6rem 0 .9rem}
+
+.opt{display:block;width:100%;text-align:left;font:inherit;color:inherit;
+  background:rgba(255,255,255,.42);border:1px solid rgba(25,34,31,.28);
+  padding:.65rem .8rem .65rem 2.4rem;margin-bottom:.5rem;cursor:pointer;position:relative;
+  transition:background .12s,border-color .12s;}
+.opt::before{content:"";position:absolute;left:.85rem;top:.95rem;width:.72rem;height:.72rem;
+  border:1px solid var(--encre-pale);background:transparent}
+.opt:hover{background:#fff;border-color:var(--encre)}
+.opt[aria-pressed="true"]{border-color:var(--tampon);background:var(--tampon-voile)}
+.opt[aria-pressed="true"]::before{background:var(--tampon);border-color:var(--tampon)}
+.opt:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--tampon);outline-offset:2px}
+.opt.fige{pointer-events:none;opacity:.72}
+.opt.juste{border-color:#2F6B48;background:rgba(47,107,72,.14)}
+.opt.juste::before{background:#2F6B48;border-color:#2F6B48}
+.opt.faux{border-color:var(--rouge);background:rgba(156,49,37,.1)}
+
+.saisie{display:flex;align-items:baseline;gap:.6rem;flex-wrap:wrap;margin-bottom:.4rem}
+input[type=text]{font:inherit;font-size:1.5rem;font-weight:bold;width:5.5rem;text-align:center;
+  background:transparent;border:none;border-bottom:2px solid var(--encre);color:var(--encre);padding:.1rem .2rem}
+.unite{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;color:var(--encre-pale)}
+
+button.action{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-weight:bold;
+  font-size:.78rem;background:var(--tampon);color:#F1EDF7;border:none;padding:.72rem 1.5rem;cursor:pointer;margin-top:.7rem}
+button.action:hover{background:#5C3C93}
+button.action[disabled]{background:#8C8F8B;cursor:not-allowed}
+button.mineur{background:transparent;color:var(--encre-pale);border:1px solid rgba(25,34,31,.3);margin-left:.5rem}
+button.mineur:hover{background:rgba(0,0,0,.05);color:var(--encre)}
+
+/* ---------- retours ---------- */
+.mention{margin-top:1.2rem;padding:.9rem 1rem;font-size:.9rem;border-left:3px solid var(--tampon);background:rgba(255,255,255,.5)}
+.mention.rect{border-left-color:var(--rouge)}
+.mention .tit{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.64rem;color:var(--tampon);margin-bottom:.35rem}
+.mention.rect .tit{color:var(--rouge)}
+.mention .art{display:inline-block;margin-top:.55rem;border:1px solid var(--tampon);color:var(--tampon);
+  font-family:var(--etroit);text-transform:uppercase;letter-spacing:.12em;font-size:.64rem;padding:.12rem .45rem}
+
+/* ---------- tampon final de cote ---------- */
+.sceau{position:fixed;inset:0;display:grid;place-items:center;background:rgba(30,36,34,.72);z-index:60;padding:1rem}
+.sceau .marque{
+  border:4px double var(--tampon);color:var(--tampon);background:rgba(233,236,231,.96);
+  padding:1.4rem 2rem;text-align:center;transform:rotate(-7deg) scale(2.6);opacity:0;
+  animation:frappe .5s cubic-bezier(.2,1.4,.4,1) forwards;
+}
+.sceau .marque .l1{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.28em;font-size:.7rem}
+.sceau .marque .l2{font-size:clamp(2.2rem,10vw,3.4rem);font-weight:bold;letter-spacing:.08em;line-height:1.1}
+.sceau .marque .l3{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.18em;font-size:.66rem;opacity:.8}
+@keyframes frappe{to{transform:rotate(-7deg) scale(1);opacity:1}}
+.sceau .suite{margin-top:1.6rem;text-align:center}
+
+/* ---------- mallette ---------- */
+.mallette{display:grid;grid-template-columns:repeat(6,1fr);gap:.4rem;max-width:420px;margin:1.2rem 0}
+.mallette input{width:100%;font-size:1.25rem}
+.chip{display:inline-block;border:1px solid var(--tampon);color:var(--tampon);padding:.2rem .55rem;margin:.2rem .3rem .2rem 0;
+  font-weight:bold;letter-spacing:.06em}
+
+/* ---------- fiche finale ---------- */
+.bilan{display:flex;gap:1.6rem;flex-wrap:wrap;margin:1.2rem 0 1.6rem}
+.bilan div span{display:block;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:var(--encre-pale)}
+.bilan div b{font-size:1.5rem}
+.fiche li{margin-bottom:.75rem;font-size:.9rem}
+.fiche li b{display:block;font-family:var(--etroit);text-transform:uppercase;letter-spacing:.1em;font-size:.7rem;color:var(--tampon)}
+ul.fiche{padding-left:1.1rem}
+
+.pied{font-family:var(--etroit);text-transform:uppercase;letter-spacing:.16em;font-size:.62rem;color:#9AA69F;text-align:center;margin-top:2rem}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{
+  body{background:#fff}header,button{display:none}
+  .feuille{box-shadow:none;background:#fff}
+}
+</style>
+</head>
+<body>
+
+<header class="barre">
+  <div class="serv"><b>Direction départementale de la police nationale</b>Commissariat central — permanence de nuit</div>
+  <div class="pendule" id="pendule">
+    <div class="h" id="heure">22:47</div>
+    <div class="r" id="reste">Transmission au parquet à 06:00</div>
+  </div>
+  <div class="jauge" id="jauge"></div>
+</header>
+
+<main id="plateau"></main>
+
+<script>
+"use strict";
+
+/* =========================================================
+   CONTENU — procédure pénale, socle initial (CNJ)
+   Chaque cote délivre un numéro d'article : le code de la
+   mallette de transmission = les six numéros, ordre croissant.
+   ========================================================= */
+
+const COTES = [
+{
+  id:"D-1", titre:"Le cadre d'enquête", nature:"Procès-verbal de saisine",
+  article:"53",
+  recit:`Il est 22h47. L'appel arrive sur le 17 : « ils sont en train de forcer le rideau du tabac, en bas de chez moi ».
+Vous arrivez à 22h53. Le rideau métallique est plié, la vitrine soufflée. Un individu détale par l'arrière-cour, une sacoche à la main.
+Sur la table de la permanence, la première cote est vide. Avant tout acte, il faut poser le cadre.`,
+  questions:[
+    {
+      type:"qcm",
+      enonce:"Dans quel cadre juridique agissez-vous ?",
+      options:[
+        "L'enquête préliminaire, puisque aucun magistrat n'a encore été saisi",
+        "L'enquête de flagrance",
+        "L'information judiciaire, sur commission rogatoire",
+        "Aucun cadre : il faut d'abord l'autorisation du procureur"
+      ],
+      bonne:1,
+      indice:"Regardez l'heure des faits par rapport à l'heure de votre arrivée.",
+      mention:`L'enquête de flagrance. Le crime ou le délit est flagrant lorsqu'il se commet actuellement ou vient de se commettre. Ici, l'infraction est en cours au moment de l'appel : vous êtes en flagrance dès votre arrivée.
+Attention au champ d'application : la flagrance ne joue que pour les crimes et les délits punis d'une peine d'emprisonnement. Une contravention, même prise sur le fait, n'ouvre jamais la flagrance.`,
+      art:"Art. 53 CPP"
+    },
+    {
+      type:"num", unite:"jours",
+      enonce:"Combien de jours l'enquête de flagrance peut-elle durer, au maximum, sans prolongation ?",
+      bonne:"8",
+      indice:"Ce n'est ni une semaine calendaire ni quinze jours.",
+      mention:`Huit jours. L'enquête de flagrance se déroule sans discontinuité pendant huit jours à compter du jour de la constatation des faits.
+Passé ce délai, les pouvoirs coercitifs propres à la flagrance tombent : l'enquête se poursuit, mais en préliminaire.`,
+      art:"Art. 53 CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"Ce délai peut-il être prolongé ?",
+      options:[
+        "Non, il est d'ordre public et jamais prolongeable",
+        "Oui, de huit jours, par l'OPJ chef de service",
+        "Oui, de huit jours, par le procureur de la République, si l'infraction est punie d'au moins cinq ans d'emprisonnement",
+        "Oui, sans limite, tant que des investigations restent utiles"
+      ],
+      bonne:2,
+      indice:"Deux conditions : qui l'autorise, et à partir de quel quantum de peine.",
+      mention:`Prolongation de huit jours au plus, décidée par le procureur de la République, et réservée aux crimes et délits punis d'au moins cinq ans d'emprisonnement.
+Retenez le couple : magistrat du parquet + quantum de cinq ans. Un OPJ, même chef de service, ne prolonge jamais lui-même la flagrance.`,
+      art:"Art. 53 CPP"
+    }
+  ]
+},
+{
+  id:"D-2", titre:"Qui a le pouvoir de quoi",
+  nature:"Procès-verbal d'interpellation",
+  article:"73",
+  recit:`Vous rattrapez l'individu deux rues plus loin. Un riverain l'a déjà plaqué contre un mur et le tient au sol depuis trois bonnes minutes.
+« J'ai eu le droit, hein ? » vous lance-t-il.
+Votre collègue titulaire vous tend son carnet : « Rédige, toi. Mais avant, dis-moi qui est quoi dans cette affaire. »`,
+  questions:[
+    {
+      type:"qcm",
+      enonce:"Sur quel fondement le riverain pouvait-il appréhender le fuyard ?",
+      options:[
+        "Aucun : hors cas de légitime défense, un particulier ne peut jamais retenir quelqu'un",
+        "En cas de crime flagrant ou de délit flagrant puni d'emprisonnement, toute personne peut appréhender l'auteur et le conduire devant l'OPJ le plus proche",
+        "Uniquement s'il a été requis par un policier présent sur place",
+        "Uniquement s'il est victime de l'infraction"
+      ],
+      bonne:1,
+      indice:"Ce pouvoir n'est réservé ni aux policiers, ni aux victimes.",
+      mention:`En cas de crime flagrant ou de délit flagrant puni d'une peine d'emprisonnement, toute personne a qualité pour en appréhender l'auteur et le conduire devant l'officier de police judiciaire le plus proche.
+Trois bornes à connaître : il faut la flagrance, il faut une peine d'emprisonnement encourue, et la personne doit être conduite sans délai devant l'OPJ. Le particulier n'a aucun pouvoir de fouille ni d'audition.`,
+      art:"Art. 73 CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"Vous êtes élève gardien de la paix, en stage d'application. Quelle est votre qualité en procédure pénale ?",
+      options:[
+        "Officier de police judiciaire",
+        "Agent de police judiciaire",
+        "Agent de police judiciaire adjoint",
+        "Aucune qualité tant que vous n'êtes pas titularisé"
+      ],
+      bonne:2,
+      indice:"La qualité d'agent de police judiciaire s'acquiert avec la titularisation.",
+      mention:`Agent de police judiciaire adjoint. Les élèves gardiens de la paix et les policiers adjoints sont APJA : ils constatent les infractions par procès-verbal, recueillent les renseignements et rendent compte à un OPJ ou à un APJ.
+Le gardien de la paix titulaire, lui, est agent de police judiciaire : il seconde l'OPJ, constate crimes, délits et contraventions, et reçoit les plaintes — mais ne peut jamais décider seul d'un acte coercitif.`,
+      art:"Art. 21 CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"Qui décide du placement en garde à vue de l'individu interpellé ?",
+      options:[
+        "Le procureur de la République, seul",
+        "L'officier de police judiciaire, qui en informe le procureur dès le début de la mesure",
+        "L'agent de police judiciaire qui a procédé à l'interpellation",
+        "Le juge des libertés et de la détention"
+      ],
+      bonne:1,
+      indice:"La décision est policière ; le contrôle est judiciaire.",
+      mention:`L'OPJ décide de la garde à vue, d'office ou sur instruction du procureur, et informe ce magistrat dès le début de la mesure.
+C'est la clé de répartition à retenir pour tout l'examen : l'OPJ décide et exécute, le parquet contrôle, autorise les prolongations et dirige l'enquête.`,
+      art:"Art. 63 CPP"
+    }
+  ]
+},
+{
+  id:"D-3", titre:"La garde à vue",
+  nature:"Procès-verbal de notification des droits",
+  article:"63",
+  recit:`Retour au commissariat. L'individu est appréhendé depuis 23h11 ; il est maintenant 23h40.
+Le registre de garde à vue est ouvert sur le bureau, deux colonnes encore vides : heure de début, droits notifiés.
+Le major de permanence, sans lever les yeux : « Tu ne remplis rien avant de m'avoir dit pourquoi tu le places. »`,
+  questions:[
+    {
+      type:"multi",
+      enonce:"Quelles conditions doivent être réunies pour placer une personne en garde à vue ?",
+      consigne:"Plusieurs réponses attendues",
+      options:[
+        "Il existe une ou plusieurs raisons plausibles de soupçonner qu'elle a commis ou tenté de commettre l'infraction",
+        "L'infraction est un crime ou un délit puni d'une peine d'emprisonnement",
+        "La mesure est l'unique moyen de parvenir à l'un des objectifs prévus par la loi",
+        "L'infraction est punie d'au moins cinq ans d'emprisonnement",
+        "La personne a refusé de justifier de son identité"
+      ],
+      bonnes:[0,1,2],
+      indice:"Deux propositions relèvent d'autres régimes : la prolongation de flagrance et la vérification d'identité.",
+      mention:`Trois conditions cumulatives : des raisons plausibles de soupçonner la personne, un crime ou un délit puni d'emprisonnement, et la nécessité — la garde à vue doit être l'unique moyen d'atteindre l'un des six objectifs légaux (exécuter les investigations, garantir la présentation au magistrat, empêcher la modification des preuves, la concertation avec des complices, les pressions sur témoins ou victimes, faire cesser l'infraction).
+Le seuil de cinq ans concerne la prolongation de la flagrance, pas la garde à vue. Le refus de justifier de son identité relève de la vérification d'identité.`,
+      art:"Art. 62-2 CPP"
+    },
+    {
+      type:"num", unite:"heures",
+      enonce:"Quelle est la durée initiale maximale de la garde à vue ?",
+      bonne:"24",
+      indice:"Une journée entière, pas davantage.",
+      mention:`Vingt-quatre heures. Point de vigilance décisif pour le CNJ : le délai court à compter de l'heure de l'appréhension, et non de l'heure d'arrivée au service ou de la décision de placement.
+Ici, l'appréhension est intervenue à 23h11 : c'est cette heure qui figure au registre.
+La prolongation de vingt-quatre heures supplémentaires est autorisée par le procureur, lorsque l'infraction est punie d'au moins un an d'emprisonnement.`,
+      art:"Art. 63 CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"Parmi ces mentions, laquelle ne figure PAS parmi les droits notifiés au gardé à vue ?",
+      options:[
+        "Le droit de faire prévenir un proche et son employeur",
+        "Le droit de téléphoner librement à la personne de son choix",
+        "Le droit d'être examiné par un médecin",
+        "Le droit de se taire",
+        "Le droit d'être assisté par un avocat"
+      ],
+      bonne:1,
+      indice:"Nuance : qui passe l'appel, la personne ou l'enquêteur ?",
+      mention:`Le gardé à vue ne téléphone pas librement. Il a le droit de faire prévenir un proche, son employeur et, s'il est étranger, les autorités consulaires : ce sont les enquêteurs qui effectuent la diligence, dans un délai de trois heures.
+Les autres droits sont bien notifiés dès le début de la mesure, dans une langue comprise : nature et date présumée de l'infraction, durée de la mesure, examen médical, avocat, interprète, consultation de certaines pièces, droit de faire des déclarations, de répondre aux questions ou de se taire.`,
+      art:"Art. 63-1 CPP"
+    }
+  ]
+},
+{
+  id:"D-4", titre:"La perquisition",
+  nature:"Procès-verbal de transport et de perquisition",
+  article:"59",
+  recit:`23h58. L'exploitation de la sacoche donne une adresse : le domicile du gardé à vue, à six minutes en voiture.
+Votre collègue attrape déjà les clés du véhicule. « On y va maintenant, avant que la copine ne vide l'appartement. »
+Vous, vous regardez la pendule.`,
+  questions:[
+    {
+      type:"num", unite:"heures",
+      enonce:"Passé quelle heure une perquisition ne peut-elle plus être commencée dans un domicile ?",
+      bonne:"21",
+      indice:"La fenêtre légale s'ouvre à 6 heures.",
+      mention:`Une perquisition ne peut être commencée ni avant 6 heures ni après 21 heures.
+Le verbe compte : c'est le commencement qui est encadré. Une perquisition régulièrement commencée à 20h45 peut se poursuivre au-delà de 21 heures.`,
+      art:"Art. 59 CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"Il est minuit passé. Que faites-vous ?",
+      options:[
+        "Vous y allez : la flagrance écarte les règles d'horaire",
+        "Vous y allez, à condition que le procureur donne son accord par téléphone",
+        "Vous ne commencez pas la perquisition avant 6 heures, sauf exception prévue par la loi",
+        "Vous y allez si la compagne du mis en cause vous ouvre volontairement"
+      ],
+      bonne:2,
+      indice:"La flagrance donne des pouvoirs étendus, mais elle ne suspend pas l'horloge.",
+      mention:`Vous attendez 6 heures. La flagrance élargit vos pouvoirs, elle ne fait pas tomber la règle horaire.
+Les exceptions existent mais sont limitativement prévues : réclamation faite de l'intérieur des lieux, ou régimes spéciaux du code (criminalité organisée, stupéfiants, terrorisme, notamment) qui supposent l'autorisation d'un magistrat. Hors de ces cas, une perquisition de nuit est nulle, et la nullité contamine les actes qui en découlent.`,
+      art:"Art. 59 CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"À 6h05, vous perquisitionnez en flagrance. L'assentiment écrit de l'occupant est-il exigé ?",
+      options:[
+        "Oui, dans tous les cadres d'enquête",
+        "Non : l'assentiment exprès et écrit n'est exigé qu'en enquête préliminaire",
+        "Oui, sauf si l'occupant est lui-même gardé à vue",
+        "Non, et aucune formalité de présence n'est requise en flagrance"
+      ],
+      bonne:1,
+      indice:"L'assentiment est la contrepartie de l'absence de contrainte dans un cadre précis.",
+      mention:`L'assentiment exprès et écrit est propre à l'enquête préliminaire : sans lui, pas de perquisition — sauf autorisation du juge des libertés et de la détention dans les cas prévus.
+En flagrance, la perquisition est coercitive, mais elle reste formaliste : elle se fait en présence de la personne chez qui elle a lieu ; à défaut, d'un représentant de son choix ; à défaut encore, de deux témoins requis, étrangers au service.`,
+      art:"Art. 76 CPP"
+    }
+  ]
+},
+{
+  id:"D-5", titre:"L'audition libre et l'identité",
+  nature:"Procès-verbal d'audition",
+  article:"61",
+  recit:`6h05. La compagne ouvre avant que vous ayez frappé. Elle parle vite, beaucoup, et se contredit deux fois en trois phrases sur l'origine de la sacoche.
+Elle n'est pas interpellée. Elle n'est pas contrainte. Mais elle intéresse la procédure.
+Il reste une place libre dans la salle d'audition, et cinquante-cinq minutes avant la transmission.`,
+  questions:[
+    {
+      type:"qcm",
+      enonce:"Vous souhaitez l'entendre sans la placer en garde à vue. Quelle est la condition centrale de l'audition libre ?",
+      options:[
+        "Qu'elle signe une renonciation à l'assistance d'un avocat",
+        "Qu'elle ne soit pas contrainte, et qu'elle soit informée notamment de son droit de quitter les lieux à tout moment",
+        "Qu'elle ne soit soupçonnée d'aucune infraction",
+        "Que le procureur ait donné son autorisation préalable"
+      ],
+      bonne:1,
+      indice:"C'est l'absence de contrainte qui distingue l'audition libre de la garde à vue.",
+      mention:`L'absence de contrainte, doublée d'une information. La personne soupçonnée entendue librement ne peut l'être qu'après notification de l'infraction reprochée, de son droit de quitter les lieux à tout moment, de son droit au silence, à l'interprète, aux conseils juridiques gratuits — et à l'assistance d'un avocat lorsque l'infraction est punie d'une peine d'emprisonnement.
+Le piège classique : on peut être soupçonné et entendu librement. C'est la contrainte, pas le soupçon, qui impose la garde à vue.`,
+      art:"Art. 61-1 CPP"
+    },
+    {
+      type:"num", unite:"heures",
+      enonce:"Elle refuse finalement de justifier de son identité. Pendant combien d'heures, au maximum, peut-elle être retenue aux fins de vérification d'identité ?",
+      bonne:"4",
+      indice:"Bien moins qu'une garde à vue.",
+      mention:`Quatre heures au plus, à compter du contrôle, sous le contrôle du procureur de la République qui peut y mettre fin à tout moment.
+Ne confondez pas les trois durées du socle : 4 heures pour la vérification d'identité, 24 heures pour la garde à vue, 24 heures de plus en cas de prolongation par le parquet.`,
+      art:"Art. 78-3 CPP"
+    }
+  ]
+},
+{
+  id:"D-6", titre:"La clôture",
+  nature:"Avis à magistrat et transmission",
+  article:"75",
+  recit:`6h40. La sacoche est placée sous scellé, la garde à vue court toujours, les auditions sont cotées.
+Le major relit la procédure debout, sans s'asseoir. « Deux questions, et je la ferme. »`,
+  questions:[
+    {
+      type:"num", unite:"ans",
+      enonce:"Quel est le délai de prescription de l'action publique en matière délictuelle, en droit commun ?",
+      bonne:"6",
+      indice:"Un chiffre entre celui des contraventions et celui des crimes.",
+      mention:`Six années révolues à compter du jour où l'infraction a été commise.
+La triade à savoir par cœur : un an pour les contraventions, six ans pour les délits, vingt ans pour les crimes. Des régimes dérogatoires existent, notamment pour les infractions commises sur des mineurs.`,
+      art:"Art. 8 CPP"
+    },
+    {
+      type:"qcm",
+      enonce:"Faute d'élucidation, l'affaire se poursuivra en enquête préliminaire. Quelle est la durée de ce cadre ?",
+      options:[
+        "Un an, non prolongeable",
+        "Deux ans, prolongeables une fois d'un an sur autorisation du procureur",
+        "Six ans, alignés sur la prescription du délit",
+        "Aucune durée : l'enquête préliminaire n'est pas enfermée dans un délai"
+      ],
+      bonne:1,
+      indice:"Une durée de principe, plus une prolongation unique.",
+      mention:`Deux ans à compter du premier acte d'enquête, prolongeables une seule fois d'un an sur autorisation écrite et motivée du procureur, soit trois ans au maximum.
+Ces durées sont portées à trois ans, prolongeables de deux ans, pour les infractions relevant de la criminalité et de la délinquance organisées ou du terrorisme.`,
+      art:"Art. 75-3 CPP"
+    }
+  ]
+}
+];
+
+const CODE = COTES.map(c=>c.article).sort((a,b)=>a-b); // 53,59,61,63,73,75
+
+/* ========================= ÉTAT ========================= */
+const DUREE = 30*60;               // 30 minutes réelles
+const H_DEBUT = 22*60+47, H_FIN = 30*60; // 22h47 -> 06h00 le lendemain
+let reste = DUREE, chrono = null, demarre = false;
+let iCote = 0, iQ = 0, erreurs = 0, penalites = 0;
+let selection = [], essais = 0;
+const acquis = [];                  // fiche de révision
+
+const plateau = document.getElementById("plateau");
+const elHeure = document.getElementById("heure");
+const elReste = document.getElementById("reste");
+const elJauge = document.getElementById("jauge");
+const elPendule = document.getElementById("pendule");
+
+function fmt(s){const m=Math.floor(Math.abs(s)/60),r=Math.abs(s)%60;return (s<0?"-":"")+String(m).padStart(2,"0")+":"+String(r).padStart(2,"0");}
+
+function pendule(){
+  const ecoule = Math.min(DUREE-reste, DUREE);
+  const t = H_DEBUT + (ecoule/DUREE)*(H_FIN-H_DEBUT);
+  const h = Math.floor(t/60)%24, m = Math.floor(t%60);
+  elHeure.textContent = String(h).padStart(2,"0")+":"+String(m).padStart(2,"0");
+  elReste.textContent = reste>0 ? "Reste "+fmt(reste)+" avant transmission" : "Délai dépassé — "+fmt(reste);
+  elJauge.style.width = Math.min(100,(ecoule/DUREE)*100)+"%";
+  elPendule.classList.toggle("tendu", reste<=300);
+}
+function lancer(){
+  if(demarre) return; demarre = true;
+  chrono = setInterval(()=>{ reste--; pendule(); }, 1000);
+}
+function penalite(s){ reste -= s; penalites += s; pendule(); }
+
+/* ========================= RENDU ========================= */
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function accueil(){
+  plateau.innerHTML = `
+  <div class="feuille">
+    <div class="entete">
+      <p class="qualif">Contrôle national judiciaire — entraînement</p>
+      <h1>Permanence de nuit</h1>
+    </div>
+    <p class="recit">Vous prenez la vacation de nuit au commissariat central. Sur le bureau, une procédure laissée en plan par le collègue précédent : <em>six cotes à régulariser</em>.
+
+À 06h00, le major de permanence transmet le dossier au parquet. La mallette de transmission est fermée par un code à six nombres. Chaque cote régularisée vous en livre un.
+
+Une erreur vous coûte <em>une minute</em> sur la nuit. Aucune erreur ne vous bloque : la procédure avance, et chaque réponse — juste ou fausse — est expliquée, article à l'appui.
+
+Ce qui se joue ici : le cadre d'enquête, les qualités judiciaires, la garde à vue, la perquisition, l'audition libre, les délais.</p>
+    <button class="action" id="go">Prendre la vacation</button>
+    <p class="pied" style="text-align:left;margin-top:1.4rem">Durée estimée 25 minutes — jeu solo — aucune connexion requise</p>
+  </div>`;
+  document.getElementById("go").onclick = ()=>{ lancer(); rendreCote(); };
+}
+
+function rendreCote(){
+  const c = COTES[iCote], q = c.questions[iQ];
+  selection = []; essais = 0;
+
+  let corps = "";
+  if(iQ===0){
+    corps += `<p class="qualif">${esc(c.nature)}</p><h2>${esc(c.titre)}</h2>
+      <p class="recit" style="margin-top:1.1rem">${esc(c.recit)}</p>`;
+  }else{
+    corps += `<p class="qualif">${esc(c.nature)}</p><h2>${esc(c.titre)}</h2>`;
+  }
+
+  let champ = "";
+  if(q.type==="num"){
+    champ = `<div class="saisie"><input type="text" id="saisie" inputmode="numeric" autocomplete="off" maxlength="3" aria-label="Votre réponse">
+      <span class="unite">${esc(q.unite||"")}</span></div>`;
+  }else{
+    champ = q.options.map((o,i)=>
+      `<button class="opt" type="button" data-i="${i}" aria-pressed="false">${esc(o)}</button>`).join("");
+  }
+
+  plateau.innerHTML = `
+  <div class="feuille">
+    <div class="entete">
+      <span class="tampon-cote">Cote ${esc(c.id)}</span>
+      ${corps}
+    </div>
+    <div class="question">
+      <p class="compteur">Cote ${iCote+1} sur ${COTES.length} — question ${iQ+1} sur ${c.questions.length}</p>
+      <p class="enonce">${esc(q.enonce)}</p>
+      ${q.consigne?`<p class="consigne">${esc(q.consigne)}</p>`:""}
+      ${champ}
+      <button class="action" id="valider">Verser la réponse</button>
+      <div id="retour"></div>
+    </div>
+  </div>
+  <p class="pied">Une erreur = une minute perdue</p>`;
+
+  if(q.type==="num"){
+    const s = document.getElementById("saisie");
+    s.focus();
+    s.addEventListener("keydown", e=>{ if(e.key==="Enter") valider(); });
+  }else{
+    plateau.querySelectorAll(".opt").forEach(b=>{
+      b.onclick = ()=>{
+        const i = +b.dataset.i;
+        if(q.type==="multi"){
+          const on = b.getAttribute("aria-pressed")==="true";
+          b.setAttribute("aria-pressed", on?"false":"true");
+          selection = on ? selection.filter(x=>x!==i) : selection.concat(i);
+        }else{
+          plateau.querySelectorAll(".opt").forEach(o=>o.setAttribute("aria-pressed","false"));
+          b.setAttribute("aria-pressed","true");
+          selection = [i];
+        }
+      };
+    });
+  }
+  document.getElementById("valider").onclick = valider;
+  window.scrollTo({top:0,behavior:"instant"});
+}
+
+function valider(){
+  const c = COTES[iCote], q = c.questions[iQ];
+  let juste = false, vide = false;
+
+  if(q.type==="num"){
+    const v = (document.getElementById("saisie").value||"").trim().replace(/\D/g,"");
+    if(!v){ vide = true; } else { juste = (v === q.bonne); }
+  }else if(q.type==="multi"){
+    if(!selection.length){ vide = true; }
+    else{
+      const a = selection.slice().sort().join(","), b = q.bonnes.slice().sort().join(",");
+      juste = a===b;
+    }
+  }else{
+    if(!selection.length){ vide = true; } else { juste = selection[0]===q.bonne; }
+  }
+
+  const retour = document.getElementById("retour");
+  if(vide){
+    retour.innerHTML = `<div class="mention rect"><div class="tit">Cote incomplète</div>Rien n'est versé au dossier. Portez une réponse avant de valider.</div>`;
+    return;
+  }
+
+  essais++;
+  if(juste){ resoudre(true); return; }
+
+  erreurs++; penalite(60);
+  if(essais===1){
+    retour.innerHTML = `<div class="mention rect"><div class="tit">Mention rectificative — une minute perdue</div>
+      La réponse ne peut pas être versée en l'état. ${esc(q.indice)}<br><br>Reprenez la cote.</div>`;
+  }else{
+    resoudre(false);
+  }
+}
+
+function resoudre(juste){
+  const c = COTES[iCote], q = c.questions[iQ];
+
+  // fige les options et marque la correction
+  plateau.querySelectorAll(".opt").forEach(b=>{
+    const i = +b.dataset.i;
+    b.classList.add("fige");
+    const estBonne = q.type==="multi" ? q.bonnes.includes(i) : i===q.bonne;
+    if(estBonne) b.classList.add("juste");
+    else if(b.getAttribute("aria-pressed")==="true") b.classList.add("faux");
+  });
+  const s = document.getElementById("saisie");
+  if(s){ s.disabled = true; if(!juste) s.value = q.bonne; }
+
+  document.getElementById("valider").remove();
+  acquis.push({art:q.art, texte:q.mention, cote:c.id, ok:juste});
+
+  document.getElementById("retour").innerHTML = `
+    <div class="mention">
+      <div class="tit">${juste ? "Cote régularisée" : "Rectification versée au dossier"}</div>
+      ${esc(q.mention).replace(/\n/g,"<br>")}
+      <div class="art">${esc(q.art)}</div>
+    </div>
+    <button class="action" id="suite">${iQ+1 < c.questions.length ? "Cote suivante" : "Parapher la cote"}</button>`;
+
+  document.getElementById("suite").onclick = ()=>{
+    if(iQ+1 < c.questions.length){ iQ++; rendreCote(); }
+    else { sceau(c); }
+  };
+  document.getElementById("suite").scrollIntoView({block:"nearest"});
+}
+
+function sceau(c){
+  const d = document.createElement("div");
+  d.className = "sceau";
+  d.innerHTML = `<div>
+    <div class="marque">
+      <div class="l1">Cote ${esc(c.id)} — vu et paraphé</div>
+      <div class="l2">ART. ${esc(c.article)}</div>
+      <div class="l3">Nombre relevé pour la mallette</div>
+    </div>
+    <div class="suite"><button class="action" id="continuer">${iCote+1<COTES.length?"Cote suivante":"Fermer la mallette"}</button></div>
+  </div>`;
+  document.body.appendChild(d);
+  const b = d.querySelector("#continuer");
+  b.focus();
+  b.onclick = ()=>{
+    d.remove();
+    if(iCote+1 < COTES.length){ iCote++; iQ = 0; rendreCote(); }
+    else { finale(); }
+  };
+}
+
+/* ========================= MALLETTE ========================= */
+function finale(){
+  const releves = COTES.map(c=>`<span class="chip">${c.article}</span>`).join("");
+  plateau.innerHTML = `
+  <div class="feuille">
+    <div class="entete">
+      <span class="tampon-cote">Transmission</span>
+      <p class="qualif">Mallette de transmission au parquet</p>
+      <h2>Six nombres, du plus petit au plus grand</h2>
+    </div>
+    <p class="recit">Les six cotes sont paraphées. Vous avez relevé, dans l'ordre du dossier :</p>
+    <p>${releves}</p>
+    <p class="recit">La serrure ne les accepte que <em>classés du plus petit au plus grand</em>.</p>
+    <div class="mallette">
+      ${[0,1,2,3,4,5].map(i=>`<input type="text" inputmode="numeric" maxlength="2" data-i="${i}" aria-label="Nombre ${i+1}">`).join("")}
+    </div>
+    <button class="action" id="ouvrir">Ouvrir la mallette</button>
+    <div id="retour"></div>
+  </div>`;
+
+  const champs = [...plateau.querySelectorAll(".mallette input")];
+  champs.forEach((c,i)=>{
+    c.addEventListener("input", ()=>{ if(c.value.length===2 && champs[i+1]) champs[i+1].focus(); });
+    c.addEventListener("keydown", e=>{ if(e.key==="Enter") document.getElementById("ouvrir").click(); });
+  });
+  champs[0].focus();
+
+  document.getElementById("ouvrir").onclick = ()=>{
+    const saisi = champs.map(c=>c.value.trim());
+    if(saisi.join("") === CODE.join("")){ clearInterval(chrono); bilan(); }
+    else{
+      erreurs++; penalite(60);
+      document.getElementById("retour").innerHTML =
+        `<div class="mention rect"><div class="tit">La serrure ne cède pas — une minute perdue</div>
+         Les six nombres sont les bons, l'ordre ne l'est pas encore. Relisez les articles relevés et rangez-les par valeur croissante.</div>`;
+    }
+  };
+}
+
+function bilan(){
+  const total = acquis.length;
+  const justes = acquis.filter(a=>a.ok).length;
+  const tempsUtilise = DUREE - reste;
+  const horsDelai = reste < 0;
+
+  plateau.innerHTML = `
+  <div class="feuille">
+    <div class="entete">
+      <span class="tampon-cote">Clôture</span>
+      <p class="qualif">${horsDelai ? "Procédure transmise hors délai" : "Procédure transmise au parquet"}</p>
+      <h1>${horsDelai ? "La mallette est partie en retard" : "La mallette est partie à l'heure"}</h1>
+    </div>
+    <p class="recit">${horsDelai
+      ? "Le dossier est complet et régulier, mais la transmission a dépassé 06h00. En procédure, la rigueur ne suffit pas : il faut aussi tenir les délais."
+      : "Six cotes régularisées avant la relève. Le major n'a rien dit, ce qui, à la permanence de nuit, vaut félicitations."}</p>
+
+    <div class="bilan">
+      <div><span>Cotes régularisées</span><b>${COTES.length}/${COTES.length}</b></div>
+      <div><span>Réponses justes du premier coup</span><b>${justes}/${total}</b></div>
+      <div><span>Temps de vacation</span><b>${fmt(tempsUtilise)}</b></div>
+      <div><span>Minutes perdues</span><b>${Math.round(penalites/60)}</b></div>
+    </div>
+
+    <h2 style="margin-bottom:.8rem">Fiche de révision — ce que la nuit a coûté</h2>
+    <ul class="fiche">
+      ${acquis.map(a=>`<li><b>${esc(a.art)} — cote ${esc(a.cote)}${a.ok?"":" · reprise"}</b>${esc(a.texte).replace(/\n/g,"<br>")}</li>`).join("")}
+    </ul>
+
+    <button class="action" id="imprimer">Imprimer la fiche</button>
+    <button class="action mineur" id="rejouer">Reprendre une vacation</button>
+  </div>
+  <p class="pied">Entraînement — les articles cités renvoient au code de procédure pénale</p>`;
+
+  document.getElementById("imprimer").onclick = ()=>window.print();
+  document.getElementById("rejouer").onclick = ()=>{
+    reste = DUREE; demarre = false; iCote = 0; iQ = 0; erreurs = 0; penalites = 0;
+    acquis.length = 0; pendule(); accueil();
+  };
+  window.scrollTo({top:0,behavior:"instant"});
+}
+
+pendule();
+accueil();
+</script>
+</body>
+</html>
