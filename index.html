@@ -275,7 +275,7 @@ rubriques.forEach(r=>{
   html += `<h3 class="rubrique">${esc(r)}</h3><div class="grille">`;
   MISSIONS.filter(m=>m.rubrique===r).forEach(m=>{
     html += `
-    <a class="cote" href="${esc(m.chemin)}">
+    <a class="cote" href="${esc(m.chemin)}" target="_blank" rel="noopener noreferrer">
       <div class="haut">
         <span class="num">${esc(m.num)}</span>
         <span class="marque ${m.type==="entrainement"?"entrain":""}">${esc(m.marque)}</span>
